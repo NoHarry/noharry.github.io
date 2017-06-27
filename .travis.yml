@@ -28,4 +28,3 @@ branches:
 env:
     global:
         - GH_REF: github.com/NoHarry/noharry.github.io.git
-
