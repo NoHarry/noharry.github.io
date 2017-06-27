@@ -24,7 +24,7 @@ after_script:
 
 branches:
   only:
-    - blog-source
+    - blog
 env:
  global:
    - GH_REF: github.com/NoHarry/noharry.github.io.git  #设置GH_REF，注意更改yourname
