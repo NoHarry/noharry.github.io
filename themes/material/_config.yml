@@ -62,7 +62,7 @@ thumbnail:
 #         color available value: black, blue, brown, green, multi, orange, pink, purple, red, white, yellow
 #         type available value: A (animal), C (culture), N (nature), S (space), T (travel)
 background:
-    purecolor: "#F5F5F5"
+    purecolor: "#009688"
     #bgimg: "/img/bg.png"
     bing:
         enable: false
@@ -167,7 +167,7 @@ sidebar:
             #icon: person
             #divider: false
     article_num:
-        use: false
+        use: true
         divider: false
     footer:
         divider: true
