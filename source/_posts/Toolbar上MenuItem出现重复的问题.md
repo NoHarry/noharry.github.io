@@ -1,8 +1,8 @@
-title:Toolbar上MenuItem出现重复的问题
-tags:Android Bug
-toc:true
-
+title: Toolbar上MenuItem出现重复的问题
+tags: Android Bug
+toc: true
 ---
+
 ﻿# Toolbar上MenuItem出现重复的问题
 
 
@@ -18,7 +18,7 @@ toc:true
   > 如上图所示，右边的item都出现了2次
 
   * 首先我认为是Toolbar的问题（左边的图标是写在布局文件中，右边是通过代码添加的Menu）
-  ```
+  ```java
    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
