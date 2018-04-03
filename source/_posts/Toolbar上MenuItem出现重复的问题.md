@@ -3,7 +3,7 @@ tags: Android Bug
 toc: true
 ---
 
-﻿# Toolbar上MenuItem出现重复的问题
+# Toolbar上MenuItem出现重复的问题
 
 
 

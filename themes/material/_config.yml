@@ -213,6 +213,12 @@ analytics:
     use:
     site_id:
 
+hanabi:
+    enable: true
+    line_number: true
+    includeDefaultColors: true
+    customColors:
+
 # Leancloud Views
 leancloud:
     enable: false
