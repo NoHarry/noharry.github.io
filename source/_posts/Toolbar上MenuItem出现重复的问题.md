@@ -1,6 +1,9 @@
 ﻿# Toolbar上MenuItem出现重复的问题
 
-标签（空格分隔）： Android bug
+
+title:Toolbar上MenuItem出现重复的问题
+tags:Android Bug
+toc:true
 
 ---
 
@@ -10,7 +13,7 @@
 
 
   > 如上图所示，右边的item都出现了2次
-  
+
   * 首先我认为是Toolbar的问题（左边的图标是写在布局文件中，右边是通过代码添加的Menu）
   ```
    @Override
@@ -29,7 +32,7 @@
         mSearchView.setMenuItem(item);
     }
   ```
-  
+
   * 因此我找到了第一种解决方法
   ```
     @Override
@@ -72,7 +75,7 @@
         getApplication().dispatchActivitySaveInstanceState(this, outState);
     }
 ```
-> 该方法调用了mFragments（FragmentManager）的saveAllState方法把Fragment数据保存到p(Parcelable) 变量中，然后通过调用outState.putParcelable(FRAGMENTS_TAG, p); 
+> 该方法调用了mFragments（FragmentManager）的saveAllState方法把Fragment数据保存到p(Parcelable) 变量中，然后通过调用outState.putParcelable(FRAGMENTS_TAG, p);
 保存到Bundle 中，FRAGMENTS_TAG这个常量
 ```
 static final String FRAGMENTS_TAG = "android:support:fragments";
@@ -123,7 +126,7 @@ protected void onCreate(@Nullable Bundle savedInstanceState) {
 @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        
+
     }
 ```
 >重写onSaveInstanceState只保存自己需要的数据即可
