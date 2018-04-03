@@ -8,6 +8,7 @@ before_install:
   - npm install -g hexo-cli
 install:
   - npm install   #安装hexo及插件
+  - npm i -S hexo-prism-plugin  #安装代码高亮插件
 before_script:
   - npm install -g mocha
   - git clone --branch master https://github.com/NoHarry/noharry.github.io.git
