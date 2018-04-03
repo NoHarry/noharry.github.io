@@ -62,7 +62,7 @@ thumbnail:
 #         color available value: black, blue, brown, green, multi, orange, pink, purple, red, white, yellow
 #         type available value: A (animal), C (culture), N (nature), S (space), T (travel)
 background:
-    purecolor: "#009688"
+    purecolor: "#F5F5F5"
     #bgimg: "/img/bg.png"
     bing:
         enable: false
@@ -216,7 +216,7 @@ analytics:
 prism_plugin:
   mode: 'preprocess'    # realtime/preprocess
   theme: 'default'
-  line_number: false    # default false
+  line_number: true    # default false
 
 # Leancloud Views
 leancloud:
