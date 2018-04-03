@@ -42,9 +42,11 @@ highlight:
   line_number: true
   auto_detect: false
   tab_replace:
-prettify:
-  enable: true
-  theme: "vibrant-ink"
+hanabi:
+    enable: true
+    line_number: true
+    includeDefaultColors: true
+    customColors:
 
 # Category & Tag
 default_category: uncategorized
