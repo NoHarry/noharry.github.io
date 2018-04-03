@@ -192,8 +192,8 @@ materialcdn:
 # Available value of "use":
 #     disqus | disqus_click | changyan | 163gentie
 comment:
-    use:
-    shortname: # duoshuo or disqus shortname
+    use: disqus
+    shortname: noharry # duoshuo or disqus shortname
     changyan_appid:
     changyan_conf:
     changyan_thread_key_type: path
@@ -210,14 +210,18 @@ search:
 # Available value:
 #     baidu | google | cnzz
 analytics:
-    use:
-    site_id:
+    use: google
+    site_id: UA-116830402-1
 
 hanabi:
-    enable: true
+    enable: false
     line_number: true
     includeDefaultColors: true
     customColors:
+
+prettify:
+  enable: true
+  theme: "vibrant-ink"
 
 # Leancloud Views
 leancloud:
