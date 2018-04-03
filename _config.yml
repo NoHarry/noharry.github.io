@@ -42,11 +42,10 @@ highlight:
   line_number: true
   auto_detect: false
   tab_replace:
-hanabi:
-    enable: true
-    line_number: true
-    includeDefaultColors: true
-    customColors:
+prism_plugin:
+  mode: 'preprocess'    # realtime/preprocess
+  theme: 'default'
+  line_number: false    # default false
 
 # Category & Tag
 default_category: uncategorized
