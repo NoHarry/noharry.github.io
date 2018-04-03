@@ -85,7 +85,7 @@ git push -u origin master
 ### 4.2 目前已经搭建好的平台
 * Gitlab CI:gitlab-ci作为gitlab提供的一个持续集成的套件，完美和gitlab进行集成，gitlab-ci已经集成进gitlab服务器中，在另一台服务器中已搭建好gitlab runner，它将会根据工程中配置的gitlab-ci.yml，执行相应的命令进行编译。
 
-![](/pic/git_ci.png)
+![](git_ci.png)
 
 * Jekins:Jenkins作为老牌的持续集成框架，在这么多年的发展中，积累很多优秀的plugin工具，对进行持续集成工作带来很大的便利。
 ![jekins.png-14kB][14]
@@ -105,7 +105,7 @@ git push -u origin master
 ### 5.2 持续发布
 Gitlab flow 分成两种情况，适应不同的开发流程。
 
-![](/pic/environment_branches.png)
+![](environment_branches.png)
 
 对于"持续发布"的项目，它建议在**master**分支以外，再建立不同的环境分支。比如，"开发环境"的分支是**master**，"预发环境"的分支是**pre-production**，"生产环境"的分支是**production**。
 
@@ -113,7 +113,7 @@ Gitlab flow 分成两种情况，适应不同的开发流程。
 
 ### 5.3 版本发布
 
-![ ](/pic/gitlab_flow.png  "gitlab flow")
+![ ](gitlab_flow.png  "gitlab flow")
 
 对于"版本发布"的项目，建议的做法是每一个稳定版本，都要从**master**分支拉出一个分支，比如**2-3-stable**、**2-4-stable**等等。
 
@@ -176,56 +176,56 @@ git push
 ```
 > 9.在gitlab的页面上进入你的项目，点击请求合并
 
-![](/pic/mq1.png)
+![](mq1.png)
 
 > 10.创建合并请求
 
-![](/pic/mq2.png)
+![](mq2.png)
 
 > 11.根据下图中的顺序配置合并请求
 
-![](/pic/mq3.png)
+![](mq3.png)
 
 > 12.选择审批此次合并任务的用户，级别必须是主程序员及以上
 
-![](/pic/mq4.png)
+![](mq4.png)
 
 > 13.点击提交合并请求，至此作为开发人员的任务暂时完成
 
-![](/pic/mq5.png)
+![](mq5.png)
 
  接下来是主程序员的任务
 
 > 1.主程序员的账号将会收到合并请求的提醒
 
-![](/pic/mq7.png)
+![](mq7.png)
 
 > 2.进入合并请求列表页面后选中开发人员提交的合并请求
 
-![](/pic/mq8.png)
+![](mq8.png)
 
 > 3.进入详情页面后查看审阅代码，如果可以合并，点击Merge后，代码将会合并进相应的目标分支；如果不能合并，点击关闭合并，待开发人员修改代码后再次提交合并请求，审阅通过后再进行合并
 
-![](/pic/mq10.png)
+![](mq10.png)
 
 
 ### 6.3 资料
 
-![](/pic/scb.jpg)
+![](scb.jpg)
 
   [1]: https://git-scm.com/
   [2]: https://github.com/
   [3]: https://about.gitlab.com/
-  [4]: /pic/svn.png
-  [5]: /pic/git.png
+  [4]: svn.png
+  [5]: git.png
   [6]: https://www.jianshu.com/p/bfec042349ca
-  [7]: /pic/gitbash.png
-  [8]: /pic/bash.png
-  [9]: /pic/address.png
-  [10]: /pic/push.png
+  [7]: gitbash.png
+  [8]: bash.png
+  [9]: address.png
+  [10]: push.png
   [11]: https://git-scm.com/downloads/guis
   [12]: https://tortoisegit.org/
   [13]: https://www.jianshu.com/p/8527be2702b5
-  [14]: /pic/jekins.png
+  [14]: jekins.png
   [15]: http://192.168.2.80:8888
   [16]: https://www.ibm.com/developerworks/cn/devops/d-continuous-delivery-framework-jenkins/index.html
