@@ -1,6 +1,7 @@
 title: Toolbar上MenuItem出现重复的问题
 tags: Android Bug
 toc: true
+date: 2017/6/15 20:22:00
 ---
 
 # Toolbar上MenuItem出现重复的问题

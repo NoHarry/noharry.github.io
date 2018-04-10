@@ -2,6 +2,8 @@
 title: Gitlab 使用说明
 toc: true
 tags: Git
+date: 2018/4/4 20:30:00
+update: 2018/4/5 21:01:00
 
 ---
 ## 1.什么是git?什么是github?什么又是gitlab?
