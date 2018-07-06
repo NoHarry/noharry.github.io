@@ -163,11 +163,65 @@ BleAdmin
         .getINSTANCE(getApplication())
         .disconnect(bleDevice);
 ```
-### 3.读，写，通知等操作
+### 3.读、写、通知等操作
 因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序一次执行
 
 * 读
 
 ```java
+ReadCallback mReadCallback = new ReadCallback() {
+      @Override
+      public void onDataRecived(BleDevice bleDevice, Data data) {
+        //读到的数据
+      }
 
+      @Override
+      public void onOperationSuccess(BleDevice bleDevice) {
+        //操作成功
+      }
+
+      @Override
+      public void onFail(BleDevice bleDevice, int statuCode, String message) {
+        //失败回调
+      }
+
+      @Override
+      public void onComplete(BleDevice bleDevice) {
+        //完成回调
+      }
+    };
+
+
+    ReadTask task = Task.newReadTask(bleDevice
+    , characteristic)                       //读取的特征
+        .with(mReadCallback);               //传入回调
+
+    BleAdmin.getINSTANCE(getApplication()).addTask(task); //将任务加入任务队列
+```
+
+* 写
+
+```java
+WriteCallback mWriteCallback = new WriteCallback() {
+      @Override
+      public void onDataSent(BleDevice bleDevice, Data data, int totalPackSize,
+          int remainPackSize) {
+        
+      }
+
+      @Override
+      public void onOperationSuccess(BleDevice bleDevice) {
+
+      }
+
+      @Override
+      public void onFail(BleDevice bleDevice, int statuCode, String message) {
+
+      }
+
+      @Override
+      public void onComplete(BleDevice bleDevice) {
+
+      }
+    };
 ```
