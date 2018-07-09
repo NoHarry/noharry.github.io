@@ -51,6 +51,14 @@ dependencies {
   <type>pom</type>
 </dependency>
 ```
+### 权限
+
+```
+<uses-permission android:name="android.permission.BLUETOOTH"/>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+第三个权限在Android API 23 及以上的版本需要[在运行时请求权限](https://developer.android.com/training/permissions/requesting?hl=zh-cn)
 
 **注意**：该库需要java1.8版本的支持
 
@@ -71,6 +79,12 @@ compileOptions {
 ### 1.扫描
 * 设定扫描规则
 
+|方法|描述|
+| ---                                               | ---                                                                            |
+| setUUID(UUID[] uuid)| 过滤出广播中含有传入的UUID的设备|
+| setDeviceName(String[] deviceName,boolean fuzzzy) | 过滤出传入设备名的设备，第二个参数true表示只要设备名中包含传入的名称都进行过滤 |
+|setDeviceMac(String[] deviceMac)|过滤出含有传入MAC地址的设备,MAC格式例如：11:22:33:44:55:66|
+|setScanTime(long scanTime)|设定扫描时长,单位:毫秒；不调用该方法或传入0,会进入持续扫描模式|
 ```java
 BleScanConfig scanConfig = new Builder()
        .setDeviceName(new String[]{Name}, isFuzzy) //过滤的设备名和是否模糊搜索
@@ -104,8 +118,6 @@ BleScanCallback mBleScanCallback = new BleScanCallback() {
     };
 BleAdmin
       .getINSTANCE(getApplication())
-      .setLogEnable(true) //是否打开日志
-      .setLogStyle(BleAdmin.LOG_STYLE_DEFAULT) //日志显示风格
       .scan(scanConfig, mBleScanCallback);
 
 ```
@@ -115,6 +127,7 @@ BleAdmin
 BleAdmin.getINSTANCE(getApplication()).stopScan();
 ```
 ### 2.连接
+
 * 连接回调
 
 ```java
@@ -148,6 +161,14 @@ BleConnectCallback mBleConnectCallback = new BleConnectCallback() {
 ```
 * 开始连接
 
+|参数|描述|
+| ---           | ---                                                         |
+| BleDevice     | 需要连接的设备                                              |
+| isAutoConnect | 是否使用自动连接,true：使用自动连接，连接慢；false：立即连接 |
+|BaseBleConnectCallback|如果想全面的自己处理连接后的回调可使用:BaseBleConnectCallback;如果只想简单的使用就用：BleConnectCallback|
+|preferredPhy|使用指定符号速率PHY(Physical Layer)的连接(PHY_LE_1M_MASK,PHY_LE_2M_MASK,PHY_LE_CODED_MASK)
+|timeOut|连接的超时时间，单位:毫秒|
+
 ```java
 BleAdmin
           .getINSTANCE(getApplication())
@@ -164,11 +185,12 @@ BleAdmin
         .disconnect(bleDevice);
 ```
 ### 3.读、写、通知等操作
-因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序一次执行
+因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序依次执行
 
 * 读
 
 ```java
+//结果回调
 ReadCallback mReadCallback = new ReadCallback() {
       @Override
       public void onDataRecived(BleDevice bleDevice, Data data) {
@@ -191,22 +213,24 @@ ReadCallback mReadCallback = new ReadCallback() {
       }
     };
 
-
+//创建任务
     ReadTask task = Task.newReadTask(bleDevice
     , characteristic)                       //读取的特征
         .with(mReadCallback);               //传入回调
 
-    BleAdmin.getINSTANCE(getApplication()).addTask(task); //将任务加入任务队列
+//将任务加入任务队列
+    BleAdmin.getINSTANCE(getApplication()).addTask(task);
 ```
 
 * 写
 
 ```java
+//结果回调
 WriteCallback mWriteCallback = new WriteCallback() {
       @Override
       public void onDataSent(BleDevice bleDevice, Data data, int totalPackSize,
           int remainPackSize) {
-        
+
       }
 
       @Override
@@ -224,4 +248,8 @@ WriteCallback mWriteCallback = new WriteCallback() {
 
       }
     };
+
+    WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)
+        .with(mWriteCallback);
+    BleAdmin.getINSTANCE(getApplication()).addTask(task);
 ```
