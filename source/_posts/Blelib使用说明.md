@@ -161,13 +161,14 @@ BleConnectCallback mBleConnectCallback = new BleConnectCallback() {
 ```
 * 开始连接
 
-|参数|描述|
-| ---           | ---                                                         |
-| BleDevice     | 需要连接的设备                                              |
-| isAutoConnect | 是否使用自动连接,true：使用自动连接，连接慢；false：立即连接 |
-|BaseBleConnectCallback|如果想全面的自己处理连接后的回调可使用:BaseBleConnectCallback;如果只想简单的使用就用：BleConnectCallback|
-|preferredPhy|使用指定符号速率PHY(Physical Layer)的连接(PHY_LE_1M_MASK,PHY_LE_2M_MASK,PHY_LE_CODED_MASK)
-|timeOut|连接的超时时间，单位:毫秒|
+|参数|是否必填|描述|
+| --- |---| ---   |
+| BleDevice  |是| 需要连接的设备 |
+| isAutoConnect |否| 是否使用自动连接,true：使用自动连接，连接慢；false：立即连接 |
+|BaseBleConnectCallback|是|如果想全面的自己处理连接后的回调可使用:BaseBleConnectCallback;如果只想简单的使用就用：BleConnectCallback|
+|preferredPhy|否|使用指定符号速率PHY(Physical Layer)的连接(PHY_LE_1M_MASK,PHY_LE_2M_MASK,PHY_LE_CODED_MASK)
+|timeOut|否|连接的超时时间，单位:毫秒|
+
 
 ```java
 BleAdmin
@@ -188,39 +189,51 @@ BleAdmin
 因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序依次执行
 
 * 读
+    - 创建读任务
 
-```java
-//结果回调
-ReadCallback mReadCallback = new ReadCallback() {
-      @Override
-      public void onDataRecived(BleDevice bleDevice, Data data) {
-        //读到的数据
-      }
+  ```java
+  ReadTask task = Task.newReadTask(bleDevice
+  , characteristic)                       //读取的特征
+      .with(mReadCallback);               //传入回调
+  ```
+  |参数|是否必须|描述|
+  |---|---|---|
+  |bleDevice|是|读任务执行的设备|
+  |bluetoothGattCharacteristic|是|需要读的特征|
 
-      @Override
-      public void onOperationSuccess(BleDevice bleDevice) {
-        //操作成功
-      }
+  * 加入任务队列
 
-      @Override
-      public void onFail(BleDevice bleDevice, int statuCode, String message) {
-        //失败回调
-      }
-
-      @Override
-      public void onComplete(BleDevice bleDevice) {
-        //完成回调
-      }
-    };
-
-//创建任务
-    ReadTask task = Task.newReadTask(bleDevice
-    , characteristic)                       //读取的特征
-        .with(mReadCallback);               //传入回调
-
-//将任务加入任务队列
+  ```java
     BleAdmin.getINSTANCE(getApplication()).addTask(task);
-```
+  ```
+
+  * 结果回调
+
+  ```java
+  ReadCallback mReadCallback = new ReadCallback() {
+        @Override
+        public void onDataRecived(BleDevice bleDevice, Data data) {
+          //读到的数据
+        }
+
+        @Override
+        public void onOperationSuccess(BleDevice bleDevice) {
+          //操作成功
+        }
+
+        @Override
+        public void onFail(BleDevice bleDevice, int statuCode, String message) {
+          //失败回调
+        }
+
+        @Override
+        public void onComplete(BleDevice bleDevice) {
+          //完成回调
+        }
+      };
+  ```
+
+
 
 * 写
 
