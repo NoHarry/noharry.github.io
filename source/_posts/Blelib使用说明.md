@@ -188,26 +188,29 @@ BleAdmin
 ### 3.读、写、通知等操作
 因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序依次执行
 
-* 读
-    - 创建读任务
+#### 3.1 读
+* 创建读任务
+
+|参数|是否必须|描述|
+|---|---|---|
+|bleDevice|是|读任务执行的设备|
+|bluetoothGattCharacteristic|是|需要读的特征|
+|bluetoothGattDescriptor|是|需要读的描述|
 
   ```java
   ReadTask task = Task.newReadTask(bleDevice
   , characteristic)                       //读取的特征
       .with(mReadCallback);               //传入回调
   ```
-  |参数|是否必须|描述|
-  |---|---|---|
-  |bleDevice|是|读任务执行的设备|
-  |bluetoothGattCharacteristic|是|需要读的特征|
 
-  * 加入任务队列
+
+* 加入任务队列
 
   ```java
     BleAdmin.getINSTANCE(getApplication()).addTask(task);
   ```
 
-  * 结果回调
+* 结果回调
 
   ```java
   ReadCallback mReadCallback = new ReadCallback() {
@@ -235,10 +238,31 @@ BleAdmin
 
 
 
-* 写
+#### 3.2 写
+
+* 创建写任务
+
+|参数|是否必填|描述|
+| --- | --- | --- |
+|bleDevice|是|需要写入数据的设备|
+|characteristic|是|需要写入数据的特征|
+|bluetoothGattDescriptor|是|需要写入数据的描述|
+|data|是|需要写入的数据|
 
 ```java
-//结果回调
+WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)
+    .with(mWriteCallback);
+```
+
+* 将任务加入任务队列
+
+```java
+BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+
+* 结果回调
+
+```java
 WriteCallback mWriteCallback = new WriteCallback() {
       @Override
       public void onDataSent(BleDevice bleDevice, Data data, int totalPackSize,
@@ -262,7 +286,6 @@ WriteCallback mWriteCallback = new WriteCallback() {
       }
     };
 
-    WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)
-        .with(mWriteCallback);
-    BleAdmin.getINSTANCE(getApplication()).addTask(task);
+
+
 ```
