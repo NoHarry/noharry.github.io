@@ -1,9 +1,9 @@
 
 title: Blelib 使用说明
 toc: true
-tags: BLE
+tags: BLE bluetooth-low-energy Android
 date: 2018/6/28 20:30:00
-update: 2018/4/5 21:01:00
+update: 2018/7/11 21:01:00
 
 ---
 # Blelib
@@ -188,26 +188,29 @@ BleAdmin
 ### 3.读、写、通知等操作
 因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序依次执行
 
-* 读
-    - 创建读任务
+#### 3.1 读
+* 创建读任务
+
+|参数|是否必须|描述|
+|---|---|---|
+|bleDevice|是|读任务执行的设备|
+|bluetoothGattCharacteristic|是|需要读的特征|
+|bluetoothGattDescriptor|是|需要读的描述|
 
   ```java
   ReadTask task = Task.newReadTask(bleDevice
   , characteristic)                       //读取的特征
       .with(mReadCallback);               //传入回调
   ```
-  |参数|是否必须|描述|
-  |---|---|---|
-  |bleDevice|是|读任务执行的设备|
-  |bluetoothGattCharacteristic|是|需要读的特征|
 
-  * 加入任务队列
+
+* 加入任务队列
 
   ```java
     BleAdmin.getINSTANCE(getApplication()).addTask(task);
   ```
 
-  * 结果回调
+* 结果回调
 
   ```java
   ReadCallback mReadCallback = new ReadCallback() {
@@ -235,15 +238,53 @@ BleAdmin
 
 
 
-* 写
+#### 3.2 写
+
+* 创建需要写入的数据对象
+
+|方法|描述|
+|---|---|
+|setValue(byte[] value)|设定需要写入的数据|
+|setValue(byte[] value,boolean isAutoSplit)|设定需要写入的数据,并且如果数据长度大于MTU值是否自动分包,默认每包最大发送20字节|
+|setValue(List< byte[] > value)|如果你想自己分包，可以调用此方法|
+|setMTUSize(int packSize)|如果你已经请求其他MTU值,此方法可以更改自动分包时每包发送的数据大小|
 
 ```java
-//结果回调
+WriteData writeData=new WriteData();
+    writeData.setValue(data,true);
+```
+
+* 创建写任务
+
+|参数|是否必填|描述|
+| --- | --- | --- |
+|bleDevice|是|需要写入数据的设备|
+|characteristic|是|需要写入数据的特征|
+|bluetoothGattDescriptor|是|需要写入数据的描述|
+|data|是|需要写入的数据|
+
+```java
+WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)
+    .with(mWriteCallback);
+```
+
+* 将任务加入任务队列
+
+```java
+BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+
+* 结果回调
+
+```java
 WriteCallback mWriteCallback = new WriteCallback() {
       @Override
       public void onDataSent(BleDevice bleDevice, Data data, int totalPackSize,
           int remainPackSize) {
-
+              //bleDevice:目标设备
+              //data:写入的数据
+              //totalPackSize：本次任务发送的总包数
+              //remainPackSize:当前剩余的包数
       }
 
       @Override
@@ -262,7 +303,134 @@ WriteCallback mWriteCallback = new WriteCallback() {
       }
     };
 
-    WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)
-        .with(mWriteCallback);
-    BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+
+#### 3.3 通知
+
+* 创建通知任务
+
+```java
+//打开通知
+WriteTask enableTask = Task
+.newEnableNotificationsTask(bleDevice, characteristic)
+.with(mDataChangeCallback);
+
+//关闭通知
+WriteTask disableTask = Task
+.newDisableNotificationsTask(bleDevice, characteristic)
+.with(mDataChangeCallback);
+```
+* 将任务加入任务队列
+
+```java
+BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+* 结果回调
+
+```java
+DataChangeCallback mDataChangeCallback = new DataChangeCallback() {
+      @Override
+      public void onDataChange(BleDevice bleDevice, Data data) {
+        //收到通知时会回调该方法
+      }
+
+      @Override
+      public void onOperationSuccess(BleDevice bleDevice) {
+
+      }
+
+      @Override
+      public void onFail(BleDevice bleDevice, int statuCode, String message) {
+
+      }
+
+      @Override
+      public void onComplete(BleDevice bleDevice) {
+
+      }
+    };
+```
+
+#### 3.4 更改最大传输单元(MTU)
+
+* 创建任务
+
+```java
+MtuTask mtuTask = Task
+.newMtuTask(bleDevice, mtu)
+.with(mMtuCallback);
+```
+* 将任务加入任务队列
+
+```java
+BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+
+* 结果回调
+
+```java
+MtuCallback mMtuCallback = new MtuCallback() {
+      @Override
+      public void onMtuChanged(BleDevice bleDevice, int mtu) {
+          //MTU修改成功后会回调此方法
+      }
+
+      @Override
+      public void onOperationSuccess(BleDevice bleDevice) {
+
+      }
+
+      @Override
+      public void onFail(BleDevice bleDevice, int statuCode, String message) {
+
+      }
+
+      @Override
+      public void onComplete(BleDevice bleDevice) {
+
+      }
+    };
+```
+
+#### 3.5 更改连接优先级
+
+* 创建任务
+
+```java
+ConnectionPriorityTask task = Task
+.newConnectionPriorityTask(bleDevice, connectionPriority)
+.with(mPriorityCallback);
+```
+
+* 将任务加入任务队列
+
+```java
+BleAdmin.getINSTANCE(getApplication()).addTask(task);
+```
+
+* 结果回调
+
+```java
+ConnectionPriorityCallback priorityCallback = new ConnectionPriorityCallback() {
+      @Override
+      public void onConnectionUpdated(BleDevice bleDevice, int interval, int latency,
+          int timeout, int status) {
+        //该回调方法在Android O 以上的版本才会生效
+      }
+
+      @Override
+      public void onOperationSuccess(BleDevice bleDevice) {
+
+      }
+
+      @Override
+      public void onFail(BleDevice bleDevice, int statuCode, String message) {
+
+      }
+
+      @Override
+      public void onComplete(BleDevice bleDevice) {
+
+      }
+    };
 ```
