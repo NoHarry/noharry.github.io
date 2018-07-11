@@ -1,7 +1,10 @@
 
 title: Blelib 使用说明
 toc: true
-tags: BLE bluetooth-low-energy Android
+tags:
+- BLE
+- bluetooth-low-energy
+- Android
 date: 2018/6/28 20:30:00
 update: 2018/7/11 21:01:00
 
