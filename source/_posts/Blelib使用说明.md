@@ -41,7 +41,7 @@ repositories {
 
 // 在你项目的Module级别下的build.gradle文件中添加下面的依赖
 dependencies {
-    implementation 'cc.noharry.blelib:blelib:0.0.5'
+    implementation 'cc.noharry.blelib:blelib:0.0.7'
 }
 ```
 
@@ -50,7 +50,7 @@ dependencies {
 <dependency>
   <groupId>cc.noharry.blelib</groupId>
   <artifactId>blelib</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.7</version>
   <type>pom</type>
 </dependency>
 ```
