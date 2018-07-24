@@ -17,6 +17,86 @@ root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
+
+#Custom Setting Start
+
+# Site settings
+SEOTitle: NoHarry的博客 | NoHarry's Blog
+header-img: img/home-bg.jpg
+email: l2011louhanyu@gmail.com
+description: ""
+keyword: ""
+
+
+# SNS settings
+# RSS: false
+#weibo_username:     Demonbane
+#zhihu_username:     Demonbane
+github_username:    NoHarry
+#twitter_username:   Demonbane_x
+#facebook_username:  demonbane.cn
+#linkedin_username:  kaijun-chen-42089354
+
+# Build settings
+anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
+
+
+# Disqus settings
+disqus_username: noharry
+
+# Duoshuo settings
+# duoshuo_username: kaijun
+# Share component is depend on Comment so we can NOT use share only.
+duoshuo_share: true                     # set to false if you want to use Comment without Sharing
+
+
+# Analytics settings
+# Baidu Analytics
+#ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
+# Google Analytics
+ga_track_id: 'UA-116830402-1'            # Format: UA-xxxxxx-xx
+ga_domain: noharry.cc
+
+
+# Sidebar settings
+sidebar: true                           # whether or not using Sidebar.
+sidebar-about-description: "NoHarry"
+sidebar-avatar: /img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+
+
+# Featured Tags
+featured-tags: true                     # whether or not using Feature-Tags
+featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
+
+
+# Friends
+# friends: [
+#     {
+#         title: "Kaijun's Blog",
+#         href: "http://blog.kaijun.rocks"
+#     },{
+#         title: "Hux Blog",
+#         href: "http://huangxuan.me"
+#     },{
+#         title: "Foo",
+#         href: "#"
+#     },{
+#         title: "Bar",
+#         href: "#"
+#     },{
+#         title: "Example Friends",
+#         href: "#"
+#     },{
+#         title: "It helps SEO",
+#         href: "#"
+#     }
+# ]
+
+
+#Custom Setting End
+
+
+
 # Directory
 source_dir: source
 public_dir: public
@@ -38,9 +118,9 @@ post_asset_folder: true
 relative_link: false
 future: true
 highlight:
-  enable: false
+  enable: true
   line_number: true
-  auto_detect: false
+  auto_detect: true
   tab_replace:
 prism_plugin:
   mode: 'preprocess'    # realtime/preprocess
