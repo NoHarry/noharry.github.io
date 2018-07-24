@@ -61,7 +61,7 @@ ga_domain: noharry.cc
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "NoHarry"
-sidebar-avatar: /img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 # Featured Tags
