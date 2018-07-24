@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: NoHarry
+title: NoHarry's Blog
 subtitle:
 # description:
 author: NoHarry
@@ -38,7 +38,7 @@ github_username:    NoHarry
 #linkedin_username:  kaijun-chen-42089354
 
 # Build settings
-anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
+anchorjs: false                          # if you want to customize anchor. check out line:181 of `post.html`
 
 
 # Disqus settings
