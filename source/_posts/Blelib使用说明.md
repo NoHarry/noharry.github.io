@@ -1,6 +1,6 @@
 ---
 title: Blelib 使用说明
-toc: true
+# toc: true
 tags:
 - BLE
 - bluetooth-low-energy
@@ -10,8 +10,8 @@ update: 2018/7/11 21:01:00
 ---
 
 
-# Blelib
----
+<!-- # Blelib -->
+
 [![Build Status](https://travis-ci.org/NoHarry/BLELib.svg?branch=dev)](https://travis-ci.org/NoHarry/BLELib)
 [ ![Download](https://api.bintray.com/packages/l2011louhanyu/maven/BleLib/images/download.svg) ](https://bintray.com/l2011louhanyu/maven/BleLib/_latestVersion)
 <a href="https://play.google.com/store/apps/details?id=cc.noharry.bledemo">
