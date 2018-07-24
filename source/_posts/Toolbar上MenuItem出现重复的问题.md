@@ -1,11 +1,11 @@
 ---
 title: Toolbar上MenuItem出现重复的问题
 tags: Android Bug
-toc: true
+# toc: true
 date: 2017/6/15 20:22:00
 ---
 
-# Toolbar上MenuItem出现重复的问题
+<!-- # Toolbar上MenuItem出现重复的问题 -->
 
  最近碰到一个关于Toolbar的问题，这个问题的发生过程是这样的:
     当程序发生异常退出或者横竖屏转换后，Toolbar上的图标发生了重复出现的情况
