@@ -158,3 +158,82 @@ update: 2018/10/24 21:01:00
   - 2.不管是新旧API的扫描结果回调都是不停的回调扫描到的设备，就算是相同的设备也会重复回调,直到你停止扫描，因此最好不要在回调方法中做过多的耗时操作,否则可能会出现[这个问题](https://issuetracker.google.com/issues/36989120)，如果需要处理回调的数据可以把数据放到另外一个线程处理，让回调尽快返回。
 
 ### 连接
+同一时间我们只能对一个外围设备发起连接，如果需要对多个设备连接可以等上一个连接成功后再进行下一个连接。
+
+```java
+  //发起连接
+  private void connect(BluetoothDevice device){
+    mBluetoothGatt = device.connectGatt(context, false, mBluetoothGattCallback);
+  }
+
+  //Gatt操作回调，此回调很重要，后面所有的操作结果都会在此方法中回调
+  BluetoothGattCallback mBluetoothGattCallback = new BluetoothGattCallback() {
+     @Override
+     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+       //gatt:GATT客户端
+       //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+       //newState:当前连接处于的状态，例如连接成功，断开连接等
+
+       //当连接状态改变时触发此回调
+     }
+
+     @Override
+     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+       //gatt:GATT客户端
+       //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+
+       //成功获取服务时触发此回调，“获取服务，特征”一节会介绍
+     }
+
+     @Override
+     public void onCharacteristicRead(BluetoothGatt gatt,
+         final BluetoothGattCharacteristic characteristic, final int status) {
+           //gatt:GATT客户端
+           //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+           //characteristic:被读的特征
+
+           //当对特征的读操作完成时触发此回调，“读特征”一节会介绍
+     }
+
+     @Override
+     public void onCharacteristicWrite(BluetoothGatt gatt,
+         final BluetoothGattCharacteristic characteristic, final int status) {
+           //gatt:GATT客户端
+           //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+           //characteristic:被写的特征
+
+           //当对特征的写操作完成时触发此回调，“写特征”一节会介绍
+     }
+
+     @Override
+     public void onCharacteristicChanged(BluetoothGatt gatt,
+         final BluetoothGattCharacteristic characteristic) {
+           //gatt:GATT客户端
+           //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+           //characteristic：特征值改变的特征
+
+           //当特征值改变时触发此回调，“打开通知”一节会介绍
+     }
+
+     @Override
+     public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+         int status) {
+           //gatt:GATT客户端
+           //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+           //descriptor:被读的descriptor
+
+           //当对descriptor的读操作完成时触发
+     }
+
+     @Override
+     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+         int status) {
+           //gatt:GATT客户端
+           //status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常
+           //descriptor:被写的descriptor
+
+           //当对descriptor的写操作完成时触发，“打开通知”一节会介绍
+     }
+   };
+
+```
