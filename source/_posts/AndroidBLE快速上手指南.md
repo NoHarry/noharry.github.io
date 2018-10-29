@@ -7,7 +7,7 @@ tags:
 - bluetooth-low-energy
 - Android
 date: 2018/10/24 20:30:00
-update: 2018/10/24 21:01:00
+update: 2018/10/29 21:01:00
 ---
 
  本文旨在提供一个方便没接触过Android上低功耗蓝牙(Bluetooth Low Energy)的同学快速上手使用的简易教程，因此对其中的一些细节不做过分深入的探讨，此外，为了让没有Ble设备的同学也能模拟与设备的交互过程，本文还提供了中央设备(central)和外围设备(peripheral)的示例代码，只需2部手机大家就可以愉快的“左右互搏”了。
@@ -333,4 +333,83 @@ characteristic.setWriteType(parentWriteType);
 
 * 对于有的设备可能我们只需要执行第一步就能收到通知，但是为了保险起见我们最好两步都做，以防出现[通知开启无效](https://stackoverflow.com/questions/22817005/why-does-setcharacteristicnotification-not-actually-enable-notifications)的情况。
 * 再次**强调**读、写、通知等这些GATT的操作都只能串行的使用，并且在执行下一个任务前必须保证上一个任务已经完成并且成功回调，否则可能出现后面的任务都阻塞无法进行的情况。
-* 对于开启通知这个操作触发**onDescriptorWrite**时代表任务完成，可以进行下一个GATT操作
+* 对于开启通知这个操作触发**onDescriptorWrite**时代表任务完成，可以进行下一个GATT操作。
+
+### 写特征
+
+```java
+//默认的写入类型，需要外围设备响应
+mCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+//无需设备响应的写入类型
+mCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
+
+mCharacteristic.setValue(data);
+mBluetoothGatt.writeCharacteristic(mCharacteristic);
+
+
+      //写入特征回调
+      @Override
+      public void onCharacteristicWrite(BluetoothGatt gatt,
+          final BluetoothGattCharacteristic characteristic, final int status) {
+
+      }
+
+```
+写特征的用法和前面打开通知中的写descriptor类似。
+
+> **注意:**
+
+* 上面提到了2种写入类型，他们的区别是：
+  * WRITE_TYPE_DEFAULT:写入数据后需要外围设备给出响应才会回调onCharacteristicWrite
+  * WRITE_TYPE_NO_RESPONSE:写入数据后无需外围设备给出响应就会回调onCharacteristicWrite
+> 如果使用WRITE_TYPE_DEFAULT这种类型写入，而外围设备没有回应，那后面的操作都会被阻塞。因此，使用哪种方式需要大家根据自己的外围设备决定,大家可以尝试把示例工程中的[这一行](https://github.com/NoHarry/BleServer/blob/master/app/src/main/java/cc/noharry/bleserver/ble/BLEAdmin.java#L323)注释掉然后在来写入数据，结合日志看看会能更好的理解。
+
+* 一次写入最多能写入20字节的数据，如果需要写入更多的数据可以分包多次写入，或者如果设备支持[更改MTU](https://developer.android.com/reference/android/bluetooth/BluetoothGatt#requestMtu)的话一次最多可以传输512字节。
+
+### 读特征
+
+```java
+//读特征
+mBluetoothGatt.readCharacteristic(mCharacteristic);
+
+//读特征的回调
+@Override
+public void onCharacteristicRead(BluetoothGatt gatt,
+          final BluetoothGattCharacteristic characteristic, final int status) {
+
+}
+```
+读特征这个操作没多少坑，只是需要前面提到的成功回调以后才算执行完成
+
+### 断开连接
+
+```java
+private void disConnect(){
+    if (mBluetoothGatt!=null){
+      //断开连接
+      mBluetoothGatt.disconnect();
+      // mBluetoothGatt.close();
+    }
+  }
+
+@Override
+public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+    if (newState==BluetoothProfile.STATE_DISCONNECTED){
+        //关闭GATT客户端
+        gatt.close();
+      }
+}
+```
+> **注意:**
+
+* **断开连接**和**连接**一样最好都在**主线程**执行
+* BluetoothGatt.disConnect()方法和BluetoothGatt.close()方法要成对配合使用，有一点需要注意：如果调用disConnect()方法后立即调用close()方法(就像上面注释掉的代码那样)蓝牙能正常断开，只是在onConnectionStateChange中我们就收不到newState为BluetoothProfile.STATE_DISCONNECTED的状态回调，因此，可以在收到断开连接的回调后在关闭GATT客户端。
+* 如果断开连接后没调用close方法，在多次重复连接-断开之后可能你就再也连不上设备了。
+
+## 总结
+其实这篇文章除了给大家列举了一些使用的API和可能遇到的问题外，最主要是要强调一个蓝牙操作的节奏，也就是一个任务完成下一个任务才能开始的原则，为了便于大家入门，上面这些使用简化了很多需要考虑的逻辑，例如：读、写、通知一直没回调怎么办？(可以给这些操作都加上超时时间)等等，不过如果大家按照本文提供的方法使用就已经能避开很多可能会遇到的奇怪问题了。
+
+如果大家需要了解更多更详细的使用方法，这里给大家推荐2个开源的ble库：
+
+* [Android-BLE-Library](https://github.com/NordicSemiconductor/Android-BLE-Library):NordicSemiconductor官方的Android ble库。
+* [BLELib](https://github.com/NoHarry/BLELib):我自己封装的ble库,大家喜欢的话可以顺手star一下。
