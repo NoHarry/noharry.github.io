@@ -158,7 +158,7 @@ update: 2018/10/24 21:01:00
   - 2.不管是新旧API的扫描结果回调都是不停的回调扫描到的设备，就算是相同的设备也会重复回调,直到你停止扫描，因此最好不要在回调方法中做过多的耗时操作,否则可能会出现[这个问题](https://issuetracker.google.com/issues/36989120)，如果需要处理回调的数据可以把数据放到另外一个线程处理，让回调尽快返回。
 
 ### 连接
-同一时间我们只能对一个外围设备发起连接，如果需要对多个设备连接可以等上一个连接成功后再进行下一个连接。
+同一时间我们只能对一个外围设备发起连接，如果需要对多个设备连接可以等上一个连接成功后再进行下一个连接，否则如果前面的某个连接操作失败了没有回调，后面的操作会被一直阻塞。
 
 ```java
   //发起连接
@@ -237,3 +237,100 @@ update: 2018/10/24 21:01:00
    };
 
 ```
+当我们调用connectGatt方法后会触发onConnectionStateChange这个回调，回调中的status我们用来判断这次操作的成功与否，newState用来判断当前的连接状态。
+
+> **注意坑来了：**
+
+* 我们在调用**连接**和**断开连接**这两方法的时候最好放到**主线程**调用，否则可能会在一些手机上遇到[奇怪的问题](https://stackoverflow.com/questions/20069507/gatt-callback-fails-to-register/20507449#20507449)
+
+### 获取服务，特征
+当我们连接成功后，GATT客户端(手机A)可以通过发现方法检索GATT服务端(手机B)的服务和特征，以便后面操作使用。
+
+![Stack_GATT_Profile_Structure](Stack_GATT_Profile_Structure.png)
+
+```java
+  //连接成功后掉用发现服务
+  gatt.discoverServices();
+
+      //当服务检索完成后会回调该方法,检索完成后我们就可以拿到需要的服务和特征
+      @Override
+      public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+
+        //获取特定UUID的服务
+        BluetoothGattService service = gatt.getService(UUID_SERVER);
+
+        //获取所有服务
+        List<BluetoothGattService> services = gatt.getServices();
+
+        if (service!=null){
+
+          //获取该服务下特定UUID的特征
+          mCharacteristic = service.getCharacteristic(UUID_CHARWRITE);
+
+          //获取该服务下所有特征
+          List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
+
+        }
+      }
+```
+
+### 打开通知
+打开通知[官方的标准做法](https://developer.android.com/guide/topics/connectivity/bluetooth-le#notification)分两步:
+```java
+//官方文档做法
+private BluetoothGatt mBluetoothGatt;
+BluetoothGattCharacteristic characteristic;
+boolean enabled;
+...
+//第一步，开启手机A(本地)对这个特征的通知
+mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+...
+//第二步，通过对手机B(远程)中需要开启通知的那个特征的CCCD写入开启通知命令，来打开通知
+BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+        UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+mBluetoothGatt.writeDescriptor(descriptor);
+```
+> 由于Android7.0以前版本存在一个bug:对descriptor的写操作会复用父特征的写入类型，这个bug在7.0之后进行了[修复](https://android.googlesource.com/platform/frameworks/base/+/942aebc95924ab1e7ea1e92aaf4e7fc45f695a6c%5E%21/),为了提高兼容性，我们可以对官方做法稍许修改：
+
+```java
+private BluetoothGatt mBluetoothGatt;
+BluetoothGattCharacteristic characteristic;
+boolean enabled;
+...
+//第一步，开启手机A(本地)对这个特征的通知
+mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+...
+//第二步，通过对手机B(远程)中需要开启通知的那个特征的CCCD写入开启通知命令，来打开通知
+BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+        UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+//获取特征的写入类型，用于后面还原
+int parentWriteType = characteristic.getWriteType();
+//设置特征的写入类型为默认类型
+characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+mBluetoothGatt.writeDescriptor(descriptor);
+//还原特征的写入类型
+characteristic.setWriteType(parentWriteType);
+```
+接下来我们来看看回调
+
+```java
+      @Override
+      public void onCharacteristicChanged(BluetoothGatt gatt,
+          final BluetoothGattCharacteristic characteristic) {
+          //当手机B的通知发过来的时候会触发这个回调
+      }
+
+      @Override
+      public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,
+          int status) {
+        //第二步会触发此回调
+      }
+```
+
+> **注意:**
+
+* 对于有的设备可能我们只需要执行第一步就能收到通知，但是为了保险起见我们最好两步都做，以防出现[通知开启无效](https://stackoverflow.com/questions/22817005/why-does-setcharacteristicnotification-not-actually-enable-notifications)的情况。
+* 再次**强调**读、写、通知等这些GATT的操作都只能串行的使用，并且在执行下一个任务前必须保证上一个任务已经完成并且成功回调，否则可能出现后面的任务都阻塞无法进行的情况。
+* 对于开启通知这个操作触发**onDescriptorWrite**时代表任务完成，可以进行下一个GATT操作
