@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Blelib 使用说明 - NoHarry的博客 | NoHarry&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://noharry.cc/2018/06/28/Blelib使用说明/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">NoHarry&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/Archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#BLE" title="BLE">BLE</a>
+                        
+                          <a class="tag" href="/tags/#bluetooth-low-energy" title="bluetooth-low-energy">bluetooth-low-energy</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                    <h1>Blelib 使用说明</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NoHarry on
+                        2018-06-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- # Blelib -->
+<p><a href="https://travis-ci.org/NoHarry/BLELib" target="_blank" rel="external"><img src="https://travis-ci.org/NoHarry/BLELib.svg?branch=dev" alt="Build Status"></a><br><a href="https://bintray.com/l2011louhanyu/maven/BleLib/_latestVersion" target="_blank" rel="external"> <img src="https://api.bintray.com/packages/l2011louhanyu/maven/BleLib/images/download.svg" alt="Download"> </a><br><a href="https://play.google.com/store/apps/details?id=cc.noharry.bledemo" target="_blank" rel="external"><br>  <img alt="Android app on Google Play" src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png"><br></a></p>
+<p>Blelib是一个Android端的低功耗蓝牙(Bluetooth Low Energy)库，该库包含许多与BLE外围设备进行<br>交互时需要用到的功能。</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ul>
+<li>支持与外围设备的扫描、连接、读、写、通知等基本功能</li>
+<li>支持自定义扫描</li>
+<li>支持自定义连接超时时间</li>
+<li>支持指定符号速率PHY(Physical Layer)的连接(PHY_LE_1M_MASK,PHY_LE_2M_MASK,PHY_LE_CODED_MASK)</li>
+<li>支持设置连接优先级</li>
+<li>支持设置最大传输单元(MTU)</li>
+<li>支持日志开关</li>
+</ul>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="Gradle"><a href="#Gradle" class="headerlink" title="Gradle"></a>Gradle</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在你项目的Project级别下的build.gradle文件中添加</span></div><div class="line"><span class="keyword">repositories</span> &#123;</div><div class="line">  jcenter()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 在你项目的Module级别下的build.gradle文件中添加下面的依赖</span></div><div class="line"><span class="keyword">dependencies</span> &#123;</div><div class="line">    implementation <span class="string">'cc.noharry.blelib:blelib:0.0.7'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cc.noharry.blelib<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>blelib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">type</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">type</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:<span class="attribute">name</span>=<span class="string">"android.permission.BLUETOOTH"</span>/&gt;</div><div class="line">&lt;uses-permission android:<span class="attribute">name</span>=<span class="string">"android.permission.BLUETOOTH_ADMIN"</span>/&gt;</div><div class="line">&lt;uses-permission android:<span class="attribute">name</span>=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;</div></pre></td></tr></table></figure>
+<p>第三个权限在Android API 23 及以上的版本需要<a href="https://developer.android.com/training/permissions/requesting?hl=zh-cn" target="_blank" rel="external">在运行时请求权限</a></p>
+<p><strong>注意</strong>：该库需要java1.8版本的支持</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在你项目的Module级别下的build.gradle文件中配置下面的属性</span></div><div class="line">android &#123;</div><div class="line">compileOptions &#123;</div><div class="line">        sourceCompatibility JavaVersion<span class="selector-class">.VERSION_1_8</span></div><div class="line">        targetCompatibility JavaVersion<span class="selector-class">.VERSION_1_8</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-扫描"><a href="#1-扫描" class="headerlink" title="1.扫描"></a>1.扫描</h3><ul>
+<li>设定扫描规则</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setUUID(UUID[] uuid)</td>
+<td>过滤出广播中含有传入的UUID的设备</td>
+</tr>
+<tr>
+<td>setDeviceName(String[] deviceName,boolean fuzzzy)</td>
+<td>过滤出传入设备名的设备，第二个参数true表示只要设备名中包含传入的名称都进行过滤</td>
+</tr>
+<tr>
+<td>setDeviceMac(String[] deviceMac)</td>
+<td>过滤出含有传入MAC地址的设备,MAC格式例如：11:22:33:44:55:66</td>
+</tr>
+<tr>
+<td>setScanTime(long scanTime)</td>
+<td>设定扫描时长,单位:毫秒；不调用该方法或传入0,会进入持续扫描模式</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">BleScanConfig scanConfig = <span class="keyword">new</span> Builder()</div><div class="line">       .setDeviceName(<span class="keyword">new</span> String[]&#123;Name&#125;, isFuzzy) <span class="comment">//过滤的设备名和是否模糊搜索</span></div><div class="line">       .setDeviceMac(<span class="keyword">new</span> String[]&#123;Mac&#125;) <span class="comment">//过滤的设备的Mac地址</span></div><div class="line">       .setUUID(<span class="keyword">new</span> UUID[]&#123;UUID.fromString(uuid)&#125;) <span class="comment">//过滤的设备的广播UUID</span></div><div class="line">       .setScanTime(scanTime) <span class="comment">//扫描时长，不设定该选项则是一直扫描，单位：毫秒</span></div><div class="line">       .build();</div></pre></td></tr></table></figure>
+<ul>
+<li>开始扫描</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//扫描结果回调</span></div><div class="line">BleScanCallback mBleScanCallback = <span class="keyword">new</span> BleScanCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScanStarted</span><span class="params">(<span class="keyword">boolean</span> isStartSuccess)</span> </span>&#123;</div><div class="line">        <span class="comment">//开始扫描</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFoundDevice</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">        <span class="comment">//发现设备，这个回调会在扫描过程中不停回调出发现的设备，其中会出现重复的设备</span></div><div class="line">        <span class="comment">//因此，使用者需要根据自身的使用情况进行过滤</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScanCompleted</span><span class="params">(List&lt;BleDevice&gt; deviceList)</span> </span>&#123;</div><div class="line">        <span class="comment">//扫描完成</span></div><div class="line">        <span class="comment">//会在扫描时间结束或者主动调用stopScan()时发生回调</span></div><div class="line">        <span class="comment">//回调出的设备为该过程中扫描到的所有设备，已过滤重复设备</span></div><div class="line">      &#125;</div><div class="line">    &#125;;</div><div class="line">BleAdmin</div><div class="line">      .getINSTANCE(getApplication())</div><div class="line">      .scan(scanConfig, mBleScanCallback);</div></pre></td></tr></table></figure>
+<ul>
+<li>停止扫描</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).stopScan();</div></pre></td></tr></table></figure>
+<h3 id="2-连接"><a href="#2-连接" class="headerlink" title="2.连接"></a>2.连接</h3><ul>
+<li>连接回调</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">BleConnectCallback mBleConnectCallback = <span class="keyword">new</span> BleConnectCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDeviceConnecting</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">          <span class="comment">//开始连接</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDeviceConnected</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">        <span class="comment">//连接成功</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServicesDiscovered</span><span class="params">(BleDevice bleDevice</span></span></div><div class="line">      , BluetoothGatt gatt, <span class="keyword">int</span> status) &#123;</div><div class="line">        <span class="comment">//发现服务</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDeviceDisconnecting</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">        <span class="comment">//正在断开连接</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDeviceDisconnected</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">        <span class="comment">//断开连接</span></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<ul>
+<li>开始连接</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>是否必填</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BleDevice</td>
+<td>是</td>
+<td>需要连接的设备</td>
+</tr>
+<tr>
+<td>isAutoConnect</td>
+<td>否</td>
+<td>是否使用自动连接,true：使用自动连接，连接慢；false：立即连接</td>
+</tr>
+<tr>
+<td>BaseBleConnectCallback</td>
+<td>是</td>
+<td>如果想全面的自己处理连接后的回调可使用:BaseBleConnectCallback;如果只想简单的使用就用：BleConnectCallback</td>
+</tr>
+<tr>
+<td>preferredPhy</td>
+<td>否</td>
+<td>使用指定符号速率PHY(Physical Layer)的连接(PHY_LE_1M_MASK,PHY_LE_2M_MASK,PHY_LE_CODED_MASK)</td>
+</tr>
+<tr>
+<td>timeOut</td>
+<td>否</td>
+<td>连接的超时时间，单位:毫秒</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">BleAdmin</div><div class="line">          .getINSTANCE(getApplication())</div><div class="line">          .connect(bleDevice               <span class="comment">//需要连接的设备</span></div><div class="line">              , <span class="keyword">false</span>                      <span class="comment">//是否自动连接，如果想立即连接传入false</span></div><div class="line">              , mBleConnectCallback        <span class="comment">//连接结果回调</span></div><div class="line">              ,timeOut);                   <span class="comment">//超时时间，单位:毫秒</span></div></pre></td></tr></table></figure>
+<ul>
+<li>断开连接</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">BleAdmin</div><div class="line">        .getINSTANCE(getApplication())</div><div class="line">        .disconnect(bleDevice);</div></pre></td></tr></table></figure>
+<h3 id="3-读、写、通知等操作"><a href="#3-读、写、通知等操作" class="headerlink" title="3.读、写、通知等操作"></a>3.读、写、通知等操作</h3><p>因为Android对BLE设备的读，写等操作需要在上一个任务完成以后才能进行下一个任务，因此以下的任务在创建并加入任务队列后将会按入列的先后顺序依次执行</p>
+<h4 id="3-1-读"><a href="#3-1-读" class="headerlink" title="3.1 读"></a>3.1 读</h4><ul>
+<li>创建读任务</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>是否必须</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bleDevice</td>
+<td>是</td>
+<td>读任务执行的设备</td>
+</tr>
+<tr>
+<td>bluetoothGattCharacteristic</td>
+<td>是</td>
+<td>需要读的特征</td>
+</tr>
+<tr>
+<td>bluetoothGattDescriptor</td>
+<td>是</td>
+<td>需要读的描述</td>
+</tr>
+</tbody>
+</table>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ReadTask task = Task.newReadTask(bleDevice</div><div class="line">, characteristic)                       <span class="comment">//读取的特征</span></div><div class="line">    .with(mReadCallback);               <span class="comment">//传入回调</span></div></pre></td></tr></table></figure>
+<ul>
+<li><p>加入任务队列</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).addTask(task);</div></pre></td></tr></table></figure>
+</li>
+<li><p>结果回调</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">ReadCallback mReadCallback = <span class="keyword">new</span> ReadCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDataRecived</span><span class="params">(BleDevice bleDevice, Data data)</span> </span>&#123;</div><div class="line">        <span class="comment">//读到的数据</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOperationSuccess</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">        <span class="comment">//操作成功</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFail</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> statuCode, String message)</span> </span>&#123;</div><div class="line">        <span class="comment">//失败回调</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line">        <span class="comment">//完成回调</span></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="3-2-写"><a href="#3-2-写" class="headerlink" title="3.2 写"></a>3.2 写</h4><ul>
+<li>创建需要写入的数据对象</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setValue(byte[] value)</td>
+<td>设定需要写入的数据</td>
+</tr>
+<tr>
+<td>setValue(byte[] value,boolean isAutoSplit)</td>
+<td>设定需要写入的数据,并且如果数据长度大于MTU值是否自动分包,默认每包最大发送20字节</td>
+</tr>
+<tr>
+<td>setValue(List&lt; byte[] &gt; value)</td>
+<td>如果你想自己分包，可以调用此方法</td>
+</tr>
+<tr>
+<td>setMTUSize(int packSize)</td>
+<td>如果你已经请求其他MTU值,此方法可以更改自动分包时每包发送的数据大小</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WriteData writeData=<span class="keyword">new</span> WriteData();</div><div class="line">    writeData.setValue(data,<span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+<ul>
+<li>创建写任务</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>是否必填</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bleDevice</td>
+<td>是</td>
+<td>需要写入数据的设备</td>
+</tr>
+<tr>
+<td>characteristic</td>
+<td>是</td>
+<td>需要写入数据的特征</td>
+</tr>
+<tr>
+<td>bluetoothGattDescriptor</td>
+<td>是</td>
+<td>需要写入数据的描述</td>
+</tr>
+<tr>
+<td>data</td>
+<td>是</td>
+<td>需要写入的数据</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">WriteTask task = Task.newWriteTask(bleDevice, characteristic, writeData)</div><div class="line">    .with(mWriteCallback);</div></pre></td></tr></table></figure>
+<ul>
+<li>将任务加入任务队列</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).addTask(task);</div></pre></td></tr></table></figure>
+<ul>
+<li>结果回调</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">WriteCallback mWriteCallback = <span class="keyword">new</span> WriteCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDataSent</span><span class="params">(BleDevice bleDevice, Data data, <span class="keyword">int</span> totalPackSize,</span></span></div><div class="line">          <span class="keyword">int</span> remainPackSize) &#123;</div><div class="line">              <span class="comment">//bleDevice:目标设备</span></div><div class="line">              <span class="comment">//data:写入的数据</span></div><div class="line">              <span class="comment">//totalPackSize：本次任务发送的总包数</span></div><div class="line">              <span class="comment">//remainPackSize:当前剩余的包数</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOperationSuccess</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFail</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> statuCode, String message)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<h4 id="3-3-通知"><a href="#3-3-通知" class="headerlink" title="3.3 通知"></a>3.3 通知</h4><ul>
+<li>创建通知任务</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//打开通知</span></div><div class="line">WriteTask enableTask = Task</div><div class="line">.newEnableNotificationsTask(bleDevice, characteristic)</div><div class="line">.with(mDataChangeCallback);</div><div class="line"></div><div class="line"><span class="comment">//关闭通知</span></div><div class="line">WriteTask disableTask = Task</div><div class="line">.newDisableNotificationsTask(bleDevice, characteristic)</div><div class="line">.with(mDataChangeCallback);</div></pre></td></tr></table></figure>
+<ul>
+<li>将任务加入任务队列</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).addTask(task);</div></pre></td></tr></table></figure>
+<ul>
+<li>结果回调</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">DataChangeCallback mDataChangeCallback = <span class="keyword">new</span> DataChangeCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDataChange</span><span class="params">(BleDevice bleDevice, Data data)</span> </span>&#123;</div><div class="line">        <span class="comment">//收到通知时会回调该方法</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOperationSuccess</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFail</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> statuCode, String message)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<h4 id="3-4-更改最大传输单元-MTU"><a href="#3-4-更改最大传输单元-MTU" class="headerlink" title="3.4 更改最大传输单元(MTU)"></a>3.4 更改最大传输单元(MTU)</h4><ul>
+<li>创建任务</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">MtuTask mtuTask = Task</div><div class="line">.newMtuTask(bleDevice, mtu)</div><div class="line">.with(mMtuCallback);</div></pre></td></tr></table></figure>
+<ul>
+<li>将任务加入任务队列</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).addTask(task);</div></pre></td></tr></table></figure>
+<ul>
+<li>结果回调</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">MtuCallback mMtuCallback = <span class="keyword">new</span> MtuCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMtuChanged</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> mtu)</span> </span>&#123;</div><div class="line">          <span class="comment">//MTU修改成功后会回调此方法</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOperationSuccess</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFail</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> statuCode, String message)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<h4 id="3-5-更改连接优先级"><a href="#3-5-更改连接优先级" class="headerlink" title="3.5 更改连接优先级"></a>3.5 更改连接优先级</h4><ul>
+<li>创建任务</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ConnectionPriorityTask task = Task</div><div class="line">.newConnectionPriorityTask(bleDevice, connectionPriority)</div><div class="line">.with(mPriorityCallback);</div></pre></td></tr></table></figure>
+<ul>
+<li>将任务加入任务队列</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">BleAdmin.getINSTANCE(getApplication()).addTask(task);</div></pre></td></tr></table></figure>
+<ul>
+<li>结果回调</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">ConnectionPriorityCallback priorityCallback = <span class="keyword">new</span> ConnectionPriorityCallback() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConnectionUpdated</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> interval, <span class="keyword">int</span> latency,</span></span></div><div class="line">          <span class="keyword">int</span> timeout, <span class="keyword">int</span> status) &#123;</div><div class="line">        <span class="comment">//该回调方法在Android O 以上的版本才会生效</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOperationSuccess</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFail</span><span class="params">(BleDevice bleDevice, <span class="keyword">int</span> statuCode, String message)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onComplete</span><span class="params">(BleDevice bleDevice)</span> </span>&#123;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/07/23/Room版本迁移遇到的问题/" data-toggle="tooltip" data-placement="top" title="Room版本迁移遇到的问题">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/04/04/Gitlab使用说明/" data-toggle="tooltip" data-placement="top" title="Gitlab 使用说明">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#BLE" title="BLE">BLE</a>
+                        
+                          <a class="tag" href="/tags/#bluetooth-low-energy" title="bluetooth-low-energy">bluetooth-low-energy</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "noharry";
+    var disqus_identifier = "http://noharry.cc/2018/06/28/Blelib使用说明/";
+    var disqus_url = "http://noharry.cc/2018/06/28/Blelib使用说明/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NoHarry">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; NoHarry&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://noharry.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-116830402-1';
+    var _gaDomain = 'noharry.cc';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

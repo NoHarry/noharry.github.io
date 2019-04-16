@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Gitlab 自动备份 - NoHarry的博客 | NoHarry&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://noharry.cc/2018/03/20/Gitlab自动备份/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">NoHarry&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/Archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                        
+                    </div>
+                    <h1>Gitlab 自动备份</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NoHarry on
+                        2018-03-20
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><h3 id="1-目的"><a href="#1-目的" class="headerlink" title="1.目的"></a>1.目的</h3><pre><code>对代码仓库进行容灾备份
+</code></pre><h3 id="2-步骤"><a href="#2-步骤" class="headerlink" title="2.步骤"></a>2.步骤</h3><ul>
+<li>因为需要使用scp方式进行文件传输，需要对代码仓库服务器(以下简称:<strong>A服务器</strong>)和备份服务器(以下简称:<strong>B服务器</strong>)进行密钥配对，以取消scp传输所需要的密码限制</li>
+<li>A服务器每天定时进行本地备份并通过scp方式将备份发送到B服务器</li>
+<li>B服务器定期清除多余备份，只保留最近10天的备份</li>
+<li>/etc/gitlab/gitlab.rb 配置文件手动备份即可(邮件，端口等配置)</li>
+</ul>
+<h2 id="二、开始"><a href="#二、开始" class="headerlink" title="二、开始"></a>二、开始</h2><h3 id="1-密钥配对"><a href="#1-密钥配对" class="headerlink" title="1.密钥配对"></a>1.密钥配对</h3><h4 id="1-1-创建并发送密钥"><a href="#1-1-创建并发送密钥" class="headerlink" title="1.1.创建并发送密钥"></a>1.1.创建并发送密钥</h4><pre><code>在A服务器上生成rsa密钥对：
+</code></pre><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">ssh-keygen -t rsa</span></div></pre></td></tr></table></figure>
+<pre><code>在/root/.ssh下生成私钥id_rsa 和公钥id_rsa.pub 两个文件
+然后在/root/.ssh下复制备份一份id_rsa.pub 命名为 id_rsa.pub.A，以便拷贝到B服务器:
+</code></pre><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp id_rsa<span class="selector-class">.pub</span> id_rsa<span class="selector-class">.pub</span><span class="selector-class">.A</span></div></pre></td></tr></table></figure>
+<pre><code>使用scp命令进行远程复制，将A机生成的id_rsa.pub.A拷贝到远程服务器B的/root/.ssh目录下:
+</code></pre><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">root<span class="variable">@ubuntu4146</span><span class="symbol">:~/</span>.ssh<span class="comment"># scp /root/.ssh/id_rsa.pub.A root@远程服务器ip:/root/.ssh/</span></div></pre></td></tr></table></figure>
+<h4 id="1-2-导入密钥"><a href="#1-2-导入密钥" class="headerlink" title="1.2.导入密钥"></a>1.2.导入密钥</h4><pre><code>在 B 的/root/.ssh下创建authorized_keys文件，使用如下命令：
+</code></pre><figure class="highlight irpf90"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">touch</span> authorized_keys</div></pre></td></tr></table></figure>
+<pre><code>通过 cat 命令 把id_rsa.pub.A 追写到 authorized_keys 文件中，命令如下：
+</code></pre><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat id_rsa<span class="selector-class">.pub</span><span class="selector-class">.A</span> &gt;&gt; authorized_keys</div></pre></td></tr></table></figure>
+<pre><code>执行如下命令，修改authorized_keys文件的权限：
+</code></pre><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod <span class="number">400</span> authorized_keys</div></pre></td></tr></table></figure>
+<blockquote>
+<p>authorized_keys文件的权限很重要，如果设置为777，那么登录的时候，还是需要提供密码的。</p>
+</blockquote>
+<h3 id="2-创建远程备份脚本"><a href="#2-创建远程备份脚本" class="headerlink" title="2.创建远程备份脚本"></a>2.创建远程备份脚本</h3><pre><code>A服务器上创建定期备份脚本auto_backup_to_remote.sh，脚本内容如下
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line"><span class="comment"># gitlab 机房备份路径</span></div><div class="line">LocalBackDir=/var/opt/gitlab/backups</div><div class="line"></div><div class="line"><span class="comment"># 远程备份服务器 gitlab备份文件存放路径</span></div><div class="line">RemoteBackDir=/root/gitlabDataBackup</div><div class="line"></div><div class="line"><span class="comment"># 远程备份服务器 登录账户</span></div><div class="line">RemoteUser=root</div><div class="line"></div><div class="line"><span class="comment"># 远程备份服务器 IP地址</span></div><div class="line">RemoteIP=（你的远程服务器地址）请自己修改</div><div class="line"></div><div class="line"><span class="comment">#当前系统日期</span></div><div class="line">DATE=`date +<span class="string">"%Y-%m-%d"</span>`</div><div class="line"></div><div class="line"><span class="comment">#Log存放路径</span></div><div class="line">LogFile=<span class="variable">$LocalBackDir</span>/<span class="built_in">log</span>/<span class="variable">$DATE</span>.<span class="built_in">log</span></div><div class="line"></div><div class="line"><span class="comment"># 查找 本地备份目录下 时间为60分钟之内的，并且后缀为.tar的gitlab备份文件</span></div><div class="line">BACKUPFILE_SEND_TO_REMOTE=$(find /var/opt/gitlab/backups3 -<span class="built_in">type</span> f -mmin -60  -name <span class="string">'*.tar*'</span>)</div><div class="line"></div><div class="line"><span class="comment">#新建日志文件</span></div><div class="line">touch <span class="variable">$LogFile</span></div><div class="line"></div><div class="line"><span class="comment">#追加日志到日志文件</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"Gitlab auto backup to remote server, start at  <span class="variable">$(date +"%Y-%m-%d %H:%M:%S")</span>"</span> &gt;&gt;  <span class="variable">$LogFile</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"---------------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$LogFile</span></div><div class="line"></div><div class="line"><span class="comment"># 输出日志，打印出每次scp的文件名</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"---------------------The file to scp to remote server is: <span class="variable">$BACKUPFILE_SEND_TO_REMOTE</span>-------------------------------"</span> &gt;&gt; <span class="variable">$LogFile</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">#备份到远程服务器</span></div><div class="line">scp <span class="variable">$BACKUPFILE_SEND_TO_REMOTE</span> <span class="variable">$RemoteUser</span>@<span class="variable">$RemoteIP</span>:<span class="variable">$RemoteBackDir</span></div><div class="line"></div><div class="line"><span class="comment">#追加日志到日志文件</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"---------------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$LogFile</span></div></pre></td></tr></table></figure>
+<pre><code>要执行脚本文件，需要修改定时远程备份脚本auto_backup_to_remote.sh的权限
+</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">chmod</span> 777 <span class="selector-tag">auto_backup_to_remote</span><span class="selector-class">.sh</span></div></pre></td></tr></table></figure>
+<h3 id="3-创建定时备份任务"><a href="#3-创建定时备份任务" class="headerlink" title="3.创建定时备份任务"></a>3.创建定时备份任务</h3><pre><code>编辑/etc/crontab 文件:
+</code></pre><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim <span class="regexp">/etc/</span>crontab</div></pre></td></tr></table></figure>
+<pre><code>添加定时备份和定时发送任务
+</code></pre><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># /etc/crontab: system-wide crontab</span></div><div class="line"><span class="comment"># Unlike any other crontab you don't have to run the `crontab'</span></div><div class="line"><span class="comment"># command to install the new version when you edit this file</span></div><div class="line"><span class="comment"># and files in /etc/cron.d. These files also have username fields,</span></div><div class="line"><span class="comment"># that none of the other crontabs do.</span></div><div class="line"></div><div class="line">SHELL=<span class="regexp">/bin/sh</span></div><div class="line">PATH=<span class="regexp">/usr/local</span><span class="regexp">/sbin:/usr</span><span class="regexp">/local/bin</span><span class="symbol">:/sbin</span><span class="symbol">:/bin</span><span class="symbol">:/usr/sbin</span><span class="symbol">:/usr/bin</span></div><div class="line"></div><div class="line"><span class="comment"># m h dom mon dow user  command</span></div><div class="line"><span class="number">17</span> *    * * *   root    cd / &amp;&amp; run-parts --report /etc/cron.hourly</div><div class="line"><span class="number">25</span> <span class="number">6</span>    * * *   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.daily )</div><div class="line"><span class="number">47</span> <span class="number">6</span>    * * <span class="number">7</span>   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.weekly )</div><div class="line"><span class="number">52</span> <span class="number">6</span>    <span class="number">1</span> * *   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.monthly )</div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line"><span class="comment"># 添加定时备份任务，每天凌晨两点，执行gitlab备份</span></div><div class="line"><span class="number">0</span>  <span class="number">2</span>    * * *   root    /opt/gitlab/bin/gitlab-rake <span class="symbol">gitlab:</span><span class="symbol">backup:</span>create CRON=<span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 添加定时发送任务，每天凌晨三点，执行gitlab备份到远程服务器</span></div><div class="line"><span class="number">0</span> <span class="number">3</span>    * * *   root   /data/gitlabData/backups/auto_backup_to_remote.sh</div></pre></td></tr></table></figure>
+<pre><code>编写完 /etc/crontab 文件之后，需要重新启动cron服务
+</code></pre><figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#重新加载cron配置文件</span></div><div class="line">sudo /usr/sbin<span class="built_in">/service </span>cron reload</div><div class="line"><span class="comment">#重启cron服务</span></div><div class="line">sudo /usr/sbin<span class="built_in">/service </span>cron restart</div></pre></td></tr></table></figure>
+<h3 id="4-定时删除B服务器上的备份"><a href="#4-定时删除B服务器上的备份" class="headerlink" title="4.定时删除B服务器上的备份"></a>4.定时删除B服务器上的备份</h3><pre><code>由于备份文件较大，每天备份一次，不久B服务器上的空间便会被占满，因此我们需要定期清理备份文件
+我们在此规定：
+</code></pre><blockquote>
+<p>备份文件超过10天的都会被删除</p>
+</blockquote>
+<h4 id="4-1创建删除过期备份文件的脚本"><a href="#4-1创建删除过期备份文件的脚本" class="headerlink" title="4.1创建删除过期备份文件的脚本"></a>4.1创建删除过期备份文件的脚本</h4><pre><code>编写脚本auto_remove_old_backup.sh
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line"><span class="comment"># 远程备份服务器 gitlab备份文件存放路径</span></div><div class="line">GitlabBackDir=/root/gitlabDataBackup</div><div class="line"></div><div class="line"><span class="comment"># 查找远程备份路径下，超过10天 且文件后缀为.tar 的 Gitlab备份文件 然后删除</span></div><div class="line">find <span class="variable">$GitlabBackDir</span> -<span class="built_in">type</span> f -mtime +10 -name <span class="string">'*.tar*'</span> -<span class="built_in">exec</span> rm &#123;&#125; \;</div></pre></td></tr></table></figure>
+<pre><code>修改auto_remove_old_backup.sh脚本权限为777
+</code></pre><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">chmod</span> 777 <span class="selector-tag">auto_remove_old_backup</span><span class="selector-class">.sh</span></div></pre></td></tr></table></figure>
+<h4 id="4-2-创建定时删除任务"><a href="#4-2-创建定时删除任务" class="headerlink" title="4.2 创建定时删除任务"></a>4.2 创建定时删除任务</h4><pre><code>编辑B服务器上的 /etc/crontab 文件
+</code></pre><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vim <span class="regexp">/etc/</span>crontab</div></pre></td></tr></table></figure>
+<pre><code>编写定时任务
+</code></pre><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># /etc/crontab: system-wide crontab</span></div><div class="line"><span class="comment"># Unlike any other crontab you don't have to run the `crontab'</span></div><div class="line"><span class="comment"># command to install the new version when you edit this file</span></div><div class="line"><span class="comment"># and files in /etc/cron.d. These files also have username fields,</span></div><div class="line"><span class="comment"># that none of the other crontabs do.</span></div><div class="line"></div><div class="line">SHELL=<span class="regexp">/bin/sh</span></div><div class="line">PATH=<span class="regexp">/usr/local</span><span class="regexp">/sbin:/usr</span><span class="regexp">/local/bin</span><span class="symbol">:/sbin</span><span class="symbol">:/bin</span><span class="symbol">:/usr/sbin</span><span class="symbol">:/usr/bin</span></div><div class="line"></div><div class="line"><span class="comment"># m h dom mon dow user  command</span></div><div class="line"><span class="number">17</span> *    * * *   root    cd / &amp;&amp; run-parts --report /etc/cron.hourly</div><div class="line"><span class="number">25</span> <span class="number">6</span>    * * *   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.daily )</div><div class="line"><span class="number">47</span> <span class="number">6</span>    * * <span class="number">7</span>   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.weekly )</div><div class="line"><span class="number">52</span> <span class="number">6</span>    <span class="number">1</span> * *   root    test -x /usr/sbin/anacron <span class="params">||</span> ( cd / &amp;&amp; run-parts --report /etc/cron.monthly )</div><div class="line"><span class="comment">#</span></div><div class="line"></div><div class="line"><span class="comment"># 添加定时删除任务，每天凌晨4点，执行删除过期的Gitlab备份文件</span></div><div class="line"><span class="number">0</span>  <span class="number">4</span>    * * *   root  /root/gitlabDataBackup/auto_remove_old_backup.sh</div></pre></td></tr></table></figure>
+<pre><code>同样，编写完 /etc/crontab 文件之后，需要重新启动cron服务
+</code></pre><figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#重新加载cron配置文件</span></div><div class="line">sudo /usr/sbin<span class="built_in">/service </span>cron reload</div><div class="line"><span class="comment">#重启cron服务</span></div><div class="line">sudo /usr/sbin<span class="built_in">/service </span>cron restart</div></pre></td></tr></table></figure>
+<h2 id="三、结束"><a href="#三、结束" class="headerlink" title="三、结束"></a>三、结束</h2><pre><code>至此从gitlab从本地备份到远程备份结束
+</code></pre><blockquote>
+<p>参考：<a href="http://blog.csdn.net/ouyang_peng/article/details/77334215" target="_blank" rel="external">http://blog.csdn.net/ouyang_peng/article/details/77334215</a></p>
+<p><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/ubuntu/trusty/gitlab-ce_10.4.2-ce.0_amd64.deb" target="_blank" rel="external">https://packages.gitlab.com/gitlab/gitlab-ce/packages/ubuntu/trusty/gitlab-ce_10.4.2-ce.0_amd64.deb</a></p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/04/04/Gitlab使用说明/" data-toggle="tooltip" data-placement="top" title="Gitlab 使用说明">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/06/15/Toolbar上MenuItem出现重复的问题/" data-toggle="tooltip" data-placement="top" title="Toolbar上MenuItem出现重复的问题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "noharry";
+    var disqus_identifier = "http://noharry.cc/2018/03/20/Gitlab自动备份/";
+    var disqus_url = "http://noharry.cc/2018/03/20/Gitlab自动备份/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NoHarry">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; NoHarry&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://noharry.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-116830402-1';
+    var _gaDomain = 'noharry.cc';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

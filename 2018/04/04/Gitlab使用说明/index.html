@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Gitlab 使用说明 - NoHarry的博客 | NoHarry&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://noharry.cc/2018/04/04/Gitlab使用说明/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">NoHarry&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/Archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                        
+                    </div>
+                    <h1>Gitlab 使用说明</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NoHarry on
+                        2018-04-04
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-什么是git-什么是github-什么又是gitlab"><a href="#1-什么是git-什么是github-什么又是gitlab" class="headerlink" title="1.什么是git?什么是github?什么又是gitlab?"></a>1.什么是git?什么是github?什么又是gitlab?</h2><ul>
+<li><a href="https://git-scm.com/" target="_blank" rel="external">git</a> 与SVN类似是一种版本控制系统</li>
+<li><a href="https://github.com/" target="_blank" rel="external">github</a> 是一个基于git实现的在线代码仓库，包含一个网站界面，向互联网开放</li>
+<li><a href="https://about.gitlab.com/" target="_blank" rel="external">gitlab</a> 是一个基于git实现的在线代码仓库软件，你可以用gitlab自己搭建一个类似于github一样的系统，一般用于在企业、学校等内部网络搭建git私服</li>
+</ul>
+<h2 id="2-为什么改用git？"><a href="#2-为什么改用git？" class="headerlink" title="2.为什么改用git？"></a>2.为什么改用git？</h2><pre><code>SVN, CVS这类早期的集中式版本控制系统，都有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的人们都通过客户端连到这台服务器，取出最新的文件或者提交更新。
+它们的原理类似下图：
+</code></pre><p><img src="svn.png" alt="svn.png-9.8kB"></p>
+<pre><code>而Git或Mercurial这类分布式版本控制系统,才是现代的首选。因为分布式的优势绝对显著。在分布式版本控制系统里，客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来。这么一来，任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复。因为每一次的提取操作，实际上都是一次对代码仓库的完整备份。
+它们的原理类似下图：
+</code></pre><p><img src="git.png" alt="git.png-12.2kB"></p>
+<p>至于<a href="https://www.jianshu.com/p/bfec042349ca" target="_blank" rel="external">Git与SVN的区别</a>在此暂时不做过多讲解，可自行搜索；</p>
+<h2 id="3-git怎么用？"><a href="#3-git怎么用？" class="headerlink" title="3.git怎么用？"></a>3.git怎么用？</h2><h3 id="3-1-git安装"><a href="#3-1-git安装" class="headerlink" title="3.1 git安装"></a>3.1 git安装</h3><pre><code>Debian/Ubuntu
+</code></pre><blockquote>
+<p>apt-get install git</p>
+</blockquote>
+<pre><code>windows
+</code></pre><blockquote>
+<p><a href="https://git-scm.com/download/win" target="_blank" rel="external">https://git-scm.com/download/win</a></p>
+</blockquote>
+<p>  廖雪峰的git教程（含图片和视频）：<a href="https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000" target="_blank" rel="external">https://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000</a></p>
+<p>  官方中文教程：<a href="https://git-scm.com/book/zh/v2" target="_blank" rel="external">https://git-scm.com/book/zh/v2</a></p>
+<h3 id="3-2-马上开始使用"><a href="#3-2-马上开始使用" class="headerlink" title="3.2 马上开始使用"></a>3.2 马上开始使用</h3><p><strong>注意</strong></p>
+<ul>
+<li><p>首先，我们需要配置忽略文件，忽略文件的原则是：</p>
+<blockquote>
+<p>1.忽略操作系统自动生成的文件，比如缩略图等；<br>2.忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没必要放进版本库，比如Java编译产生的.class文件；</p>
+</blockquote>
+</li>
+<li><p>进入你的项目的根目录，创建名为”.gitignore”的文件，不需要从头写.gitignore文件，<a href="https://github.com/github/gitignore" target="_blank" rel="external">这里</a> 已经为我们准备了各种配置文件，只需要组合一下就可以使用了</p>
+</li>
+<li><p>在git安装好后对于windows平台，点击鼠标右键会看见如下的菜单：<br><img src="gitbash.png" alt="gitbash.png-13.3kB"></p>
+</li>
+<li><p>打开上图中选中的Git Bash,这个操作会打开如下的控制台，接下来我们的操作将会在这个控制台中进行<br><img src="bash.png" alt="bash.png-11.1kB"></p>
+</li>
+<li><p>首先我们需要配置Git 全局设置，在控制台中输入下面的命令</p>
+<blockquote>
+<p>git config –global user.name “你的gitlab用户名”<br>  git config –global user.email “你的gitlab注册邮箱”</p>
+</blockquote>
+</li>
+<li><p>接下来进入到你的项目的根目录再次打开Git Bash 或者在刚才打开的Git Bash控制台中输入：</p>
+<blockquote>
+<p>cd /你的项目的根目录</p>
+</blockquote>
+</li>
+<li><p>下面将会在你的项目下创建一个本地git仓库，并且与远程仓库关联，在刚才打开的控制台中分别输入如下命令：</p>
+<blockquote>
+<p>git init<br>git remote add origin 你的项目所在的gitlab仓库地址<br>git add .<br>git commit -m “Initial commit”<br>git push -u origin master</p>
+</blockquote>
+</li>
+</ul>
+<p>你的项目所在的gitlab仓库地址可以在这找到：<br><img src="address.png" alt="address.png-173.4kB"></p>
+<ul>
+<li>接下来会要求你分别输入你的gitlab的用户名和密码，之后整个初始化的过程就结束了：<br><img src="push.png" alt="push.png-151.3kB"></li>
+</ul>
+<h3 id="3-3-git使用工具"><a href="#3-3-git使用工具" class="headerlink" title="3.3 git使用工具"></a>3.3 git使用工具</h3><pre><code>git使用工具主要有两种方式
+</code></pre><ul>
+<li>命令行 也就是刚才我们初始化仓库时使用的Git Bash</li>
+<li><p>使用GUI客户端<br>  这有不少针对不同平台的<a href="https://git-scm.com/downloads/guis" target="_blank" rel="external">GUI客户端</a>，大家可以自行挑选使用，对于windows平台推荐<a href="https://tortoisegit.org/" target="_blank" rel="external">tortoisegit</a></p>
+<p>  <a href="https://www.jianshu.com/p/8527be2702b5" target="_blank" rel="external">tortoisegit 安装说明</a></p>
+</li>
+</ul>
+<h2 id="4-持续集成平台"><a href="#4-持续集成平台" class="headerlink" title="4.持续集成平台"></a>4.持续集成平台</h2><h3 id="4-1-什么是持续集成？"><a href="#4-1-什么是持续集成？" class="headerlink" title="4.1 什么是持续集成？"></a>4.1 什么是持续集成？</h3><pre><code>持续集成强调开发人员提交了新代码之后，立刻进行构建、（单元）测试。根据测试结果，我们可以确定新代码和原有代码能否正确地集成在一起。
+</code></pre><h3 id="4-2-目前已经搭建好的平台"><a href="#4-2-目前已经搭建好的平台" class="headerlink" title="4.2 目前已经搭建好的平台"></a>4.2 目前已经搭建好的平台</h3><ul>
+<li>Gitlab CI:gitlab-ci作为gitlab提供的一个持续集成的套件，完美和gitlab进行集成，gitlab-ci已经集成进gitlab服务器中，在另一台服务器中已搭建好gitlab runner，它将会根据工程中配置的gitlab-ci.yml，执行相应的命令进行编译。</li>
+</ul>
+<p><img src="git_ci.png" alt=""></p>
+<ul>
+<li>Jekins:Jenkins作为老牌的持续集成框架，在这么多年的发展中，积累很多优秀的plugin工具，对进行持续集成工作带来很大的便利。<br><img src="jekins.png" alt="jekins.png-14kB"></li>
+</ul>
+<p>目前<a href="http://192.168.2.80:8888" target="_blank" rel="external">Jekins服务器</a>已经搭建完成，大家可以自行访问，注册，配置</p>
+<p>参考：<a href="https://www.ibm.com/developerworks/cn/devops/d-continuous-delivery-framework-jenkins/index.html" target="_blank" rel="external">使用 Jenkins 设置一个持续交付框架</a><br>            <a href="https://segmentfault.com/a/1190000011553991" target="_blank" rel="external">Docker 及 GitLab CI 在前端工作流上的实践分享</a></p>
+<ul>
+<li>总结:Gitlab CI 和 Jekins的功能大致相同，Gitlab CI配置较为简单,Jekins由于插件比较完善，更适合比较复杂的项目，大家可以自行选择使用。</li>
+</ul>
+<h2 id="5-Gitlab-工作流"><a href="#5-Gitlab-工作流" class="headerlink" title="5.Gitlab 工作流"></a>5.Gitlab 工作流</h2><h3 id="5-1-上游优先原则"><a href="#5-1-上游优先原则" class="headerlink" title="5.1 上游优先原则"></a>5.1 上游优先原则</h3><pre><code>Gitlab flow 的最大原则叫做&quot;上游优先&quot;（upsteam first），即只存在一个主分支master，它是所有其他分支的&quot;上游&quot;。只有上游分支采纳的代码变化，才能应用到其他分支。
+</code></pre><h3 id="5-2-持续发布"><a href="#5-2-持续发布" class="headerlink" title="5.2 持续发布"></a>5.2 持续发布</h3><p>Gitlab flow 分成两种情况，适应不同的开发流程。</p>
+<p><img src="environment_branches.png" alt=""></p>
+<p>对于”持续发布”的项目，它建议在<strong>master</strong>分支以外，再建立不同的环境分支。比如，”开发环境”的分支是<strong>master</strong>，”预发环境”的分支是<strong>pre-production</strong>，”生产环境”的分支是<strong>production</strong>。</p>
+<p>开发分支是预发分支的”上游”，预发分支又是生产分支的”上游”。代码的变化，必须由”上游”向”下游”发展。比如，生产环境出现了bug，这时就要新建一个功能分支，先把它合并到<strong>master</strong>，确认没有问题，再<strong>cherry-pick</strong>到<strong>pre-production</strong>，这一步也没有问题，才进入<strong>production</strong>。</p>
+<h3 id="5-3-版本发布"><a href="#5-3-版本发布" class="headerlink" title="5.3 版本发布"></a>5.3 版本发布</h3><p><img src="gitlab_flow.png" alt=" " title="gitlab flow"></p>
+<p>对于”版本发布”的项目，建议的做法是每一个稳定版本，都要从<strong>master</strong>分支拉出一个分支，比如<strong>2-3-stable</strong>、<strong>2-4-stable</strong>等等。</p>
+<p>以后，只有修补bug，才允许将代码合并到这些分支，并且此时要更新小版本号。</p>
+<h2 id="6-分支使用"><a href="#6-分支使用" class="headerlink" title="6. 分支使用"></a>6. 分支使用</h2><h3 id="6-1-使用场景"><a href="#6-1-使用场景" class="headerlink" title="6.1 使用场景"></a>6.1 使用场景</h3><p>角色：</p>
+<blockquote>
+<p>开发人员：（可以创建分支，并将代码push到非保护性分支）</p>
+<p>主程序员 ：（权限比开发人员更高，可以处理合并分支请求,同时可以将代码push到保护性分支）</p>
+</blockquote>
+<p>任务：</p>
+<blockquote>
+<p>开发人员：从主线分支拉取一个自己的分支（此处以test分支为例）进行开发，将代码提交到远程仓库后提交合并请求，将自己的分支与主线分支合并</p>
+<p>主程序员：收到合并请求，审查代码无误后将代码合并到主线分支</p>
+</blockquote>
+<h3 id="6-2-具体步骤"><a href="#6-2-具体步骤" class="headerlink" title="6.2 具体步骤"></a>6.2 具体步骤</h3><blockquote>
+<p>1.checkout 到 master 分支</p>
+</blockquote>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout <span class="literal">master</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>2.将master分支的代码更新到最新版本</p>
+</blockquote>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">git pull</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>3.创建本地仓库的test分支,并切换到test分支</p>
+</blockquote>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git checkout -<span class="selector-tag">b</span> test</div></pre></td></tr></table></figure>
+<blockquote>
+<p>4.将本地的test分支推送到远程仓库，并在远程仓库创建test分支</p>
+</blockquote>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">push</span> <span class="built_in">origin</span> test:test     //格式：git <span class="built_in">push</span> <span class="built_in">origin</span> 你要提交的本地分支名:远程分支名</div></pre></td></tr></table></figure>
+<blockquote>
+<p>5.将远程仓库的test分支设定为本地test分支的上游分支，并关联</p>
+</blockquote>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">push</span> --<span class="keyword">set</span>-upstream origin test</div></pre></td></tr></table></figure>
+<blockquote>
+<p>6.在test分支进行编码</p>
+<p>7.将更新的代码提交到本地仓库</p>
+</blockquote>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git commit -<span class="selector-tag">a</span> -m <span class="string">'更新说明'</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>8.将本地仓库的更新代码推送到远程仓库</p>
+</blockquote>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git <span class="keyword">push</span></div></pre></td></tr></table></figure>
+<blockquote>
+<p>9.在gitlab的页面上进入你的项目，点击请求合并</p>
+</blockquote>
+<p><img src="mq1.png" alt=""></p>
+<blockquote>
+<p>10.创建合并请求</p>
+</blockquote>
+<p><img src="mq2.png" alt=""></p>
+<blockquote>
+<p>11.根据下图中的顺序配置合并请求</p>
+</blockquote>
+<p><img src="mq3.png" alt=""></p>
+<blockquote>
+<p>12.选择审批此次合并任务的用户，级别必须是主程序员及以上</p>
+</blockquote>
+<p><img src="mq4.png" alt=""></p>
+<blockquote>
+<p>13.点击提交合并请求，至此作为开发人员的任务暂时完成</p>
+</blockquote>
+<p><img src="mq5.png" alt=""></p>
+<p> 接下来是主程序员的任务</p>
+<blockquote>
+<p>1.主程序员的账号将会收到合并请求的提醒</p>
+</blockquote>
+<p><img src="mq7.png" alt=""></p>
+<blockquote>
+<p>2.进入合并请求列表页面后选中开发人员提交的合并请求</p>
+</blockquote>
+<p><img src="mq8.png" alt=""></p>
+<blockquote>
+<p>3.进入详情页面后查看审阅代码，如果可以合并，点击Merge后，代码将会合并进相应的目标分支；如果不能合并，点击关闭合并，待开发人员修改代码后再次提交合并请求，审阅通过后再进行合并</p>
+</blockquote>
+<p><img src="mq10.png" alt=""></p>
+<h3 id="6-3-资料"><a href="#6-3-资料" class="headerlink" title="6.3 资料"></a>6.3 资料</h3><p><img src="scb.jpg" alt=""></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/06/28/Blelib使用说明/" data-toggle="tooltip" data-placement="top" title="Blelib 使用说明">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/03/20/Gitlab自动备份/" data-toggle="tooltip" data-placement="top" title="Gitlab 自动备份">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Git" title="Git">Git</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "noharry";
+    var disqus_identifier = "http://noharry.cc/2018/04/04/Gitlab使用说明/";
+    var disqus_url = "http://noharry.cc/2018/04/04/Gitlab使用说明/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NoHarry">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; NoHarry&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://noharry.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-116830402-1';
+    var _gaDomain = 'noharry.cc';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

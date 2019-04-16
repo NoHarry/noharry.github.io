@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Room版本迁移遇到的问题 - NoHarry的博客 | NoHarry&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://noharry.cc/2018/07/23/Room版本迁移遇到的问题/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">NoHarry&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/Archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('boom.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#Room" title="Room">Room</a>
+                        
+                          <a class="tag" href="/tags/#android-architecture-components" title="android-architecture-components">android-architecture-components</a>
+                        
+                    </div>
+                    <h1>Room版本迁移遇到的问题</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NoHarry on
+                        2018-07-23
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Room版本迁移遇到的问题"><a href="#Room版本迁移遇到的问题" class="headerlink" title="Room版本迁移遇到的问题"></a>Room版本迁移遇到的问题</h2><blockquote>
+<p>本文的Room源码基于1.1.1版本</p>
+</blockquote>
+<p>数据库升级的过程就像排雷一样,稍有不慎就炸了</p>
+<p>对于遇到的问题我们来还原下现场，有下面2种场景</p>
+<ul>
+<li>V1-&gt;V2： 增加字段</li>
+<li>V2-&gt;V3： 修改原有字段类型，删除原有字段</li>
+</ul>
+<h3 id="增加字段-V1-gt-V2"><a href="#增加字段-V1-gt-V2" class="headerlink" title="增加字段(V1 -&gt; V2)"></a>增加字段(V1 -&gt; V2)</h3><h4 id="先实现个V1版本"><a href="#先实现个V1版本" class="headerlink" title="先实现个V1版本"></a>先实现个V1版本</h4><p>首先实现一个Entity类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span>(tableName = <span class="string">"user"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">  <span class="meta">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">  <span class="keyword">private</span> String name;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">long</span> timestamp;</div><div class="line">  ...<span class="comment">//setter,getter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>该类一共有4个字段,其中id为自增长的主键。<br>接下来实现一个简单的DAO层接口:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Dao</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserDao</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="meta">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">addUser</span><span class="params">(User user)</span></span>;</div><div class="line"></div><div class="line">  <span class="meta">@Query</span>(<span class="string">"SELECT * FROM user"</span>)</div><div class="line">  <span class="function">List&lt;User&gt; <span class="title">getAllUsers</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里该接口就简单的增加和查询，</p>
+<p>再下来实现一个Database类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Database</span>(entities = &#123;User.class&#125;,version = <span class="number">1</span>,exportSchema = <span class="keyword">false</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AppDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> AppDatabase INSTANCE;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME=<span class="string">"user_test.db"</span>;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AppDatabase <span class="title">getINSTANCE</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">      <span class="keyword">synchronized</span> (AppDatabase.class)&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">          INSTANCE=Room.databaseBuilder(App.context,AppDatabase.class,DB_NAME)</div><div class="line">              .build();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> INSTANCE;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">//上面实现的DAO接口</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">getUserDao</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后,往数据库中写入一条数据就完成本次的V1版本</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        User user=<span class="keyword">new</span> User();</div><div class="line">        user.setName(UUID.randomUUID().toString());</div><div class="line">        user.setAge((<span class="keyword">int</span>) (<span class="number">100</span>*Math.random()));</div><div class="line">        user.setTimestamp(System.currentTimeMillis());</div><div class="line">        AppDatabase.getINSTANCE().getUserDao().addUser(user);</div><div class="line">      &#125;</div><div class="line">    &#125;).start();</div></pre></td></tr></table></figure>
+<hr>
+<h4 id="实现V2版本"><a href="#实现V2版本" class="headerlink" title="实现V2版本"></a>实现V2版本</h4><p>现在我们要实现V2版本，先来看看Entity类中有何变化:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span>(tableName = <span class="string">"user"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">  <span class="meta">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">  <span class="keyword">private</span> String name;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">long</span> timestamp;</div><div class="line">  <span class="comment">//V2添加字段</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> weight;</div><div class="line">  <span class="keyword">private</span> String sex;</div><div class="line">  ...<span class="comment">//setter,getter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面代码中可以发现新增了weight和sex两个字段，接下来需要提供migration以使数据库版本变化时数据可以保存下来：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Database</span>(entities = &#123;User.class&#125;,version = <span class="number">2</span>,exportSchema = <span class="keyword">false</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AppDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> AppDatabase INSTANCE;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME=<span class="string">"user_test.db"</span>;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AppDatabase <span class="title">getINSTANCE</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">      <span class="keyword">synchronized</span> (AppDatabase.class)&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">          INSTANCE=Room.databaseBuilder(App.context,AppDatabase.class,DB_NAME)</div><div class="line">              .addMigrations(MIGRATION_1_2)</div><div class="line">              .build();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> INSTANCE;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">//上面实现的DAO接口</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">getUserDao</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> <span class="keyword">final</span> Migration MIGRATION_1_2=<span class="keyword">new</span> Migration(<span class="number">1</span>,<span class="number">2</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">migrate</span><span class="params">(@NonNull SupportSQLiteDatabase database)</span> </span>&#123;</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN weight INTEGER "</span>);</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN sex TEXT"</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里对AppDatabase中进行了一些改变，首先将<strong>version</strong>变为了2,同时调用了addMigrations方法,在migrate方法中我们执行了2条SQL语句,增加INTEGER类型的weight和TEXT类型的sex这两个字段,现在升级数据库的准备工作做完了,我们打包运行一下。</p>
+<blockquote>
+<p>程序出现崩溃-_-!</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">java.lang.IllegalStateException: Migration didn't properly handle user(cc.noharry.dbtest.User).</div><div class="line">     Expected:</div><div class="line">    TableInfo&#123;name='user', columns=&#123;name=Column&#123;name='name', type='TEXT', affinity='2', notNull=false, primaryKeyPosition=0&#125;, timestamp=Column&#123;name='timestamp', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0&#125;, age=Column&#123;name='age', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0&#125;, sex=Column&#123;name='sex', type='TEXT', affinity='2', notNull=false, primaryKeyPosition=0&#125;, weight=Column&#123;name='weight', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0&#125;, id=Column&#123;name='id', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=1&#125;&#125;, foreignKeys=[], indices=[]&#125;</div><div class="line">     Found:</div><div class="line">    TableInfo&#123;name='user', columns=&#123;name=Column&#123;name='name', type='TEXT', affinity='2', notNull=false, primaryKeyPosition=0&#125;, timestamp=Column&#123;name='timestamp', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0&#125;, age=Column&#123;name='age', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=0&#125;, sex=Column&#123;name='sex', type='TEXT', affinity='2', notNull=false, primaryKeyPosition=0&#125;, weight=Column&#123;name='weight', type='INTEGER', affinity='3', notNull=false, primaryKeyPosition=0&#125;, id=Column&#123;name='id', type='INTEGER', affinity='3', notNull=true, primaryKeyPosition=1&#125;&#125;, foreignKeys=[], indices=[]&#125;</div></pre></td></tr></table></figure>
+<p>细看可以发现可以发现这两者有一处不同：</p>
+<p>Expected：</p>
+<blockquote>
+<p>weight=Column{name=’weight’, type=’INTEGER’, affinity=’3’, notNull=true, primaryKeyPosition=0}</p>
+</blockquote>
+<p>Found:</p>
+<blockquote>
+<p>weight=Column{name=’weight’, type=’INTEGER’, affinity=’3’, notNull=false, primaryKeyPosition=0}</p>
+</blockquote>
+<p>不同点就在于<strong>notNull</strong>这项,因此问题就出在之前migrate中的第一条SQL语句,现在我们修改那条语句:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> Migration MIGRATION_1_2=<span class="keyword">new</span> Migration(<span class="number">1</span>,<span class="number">2</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">migrate</span><span class="params">(@NonNull SupportSQLiteDatabase database)</span> </span>&#123;</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN weight INTEGER NOT NULL DEFAULT 0"</span>);</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN sex TEXT"</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>为什么除了加入NOT NULL 之外还要加上DEFAULT 0 ?</p>
+<p>因为加入了NOT NULL不能为空，所以要给它赋上初始值，具体初始值可根据你的实际情况考虑，在此默认写0.</p>
+</blockquote>
+<p><img src="v2.png" alt=""></p>
+<p>现在重新打包运行,程序不崩了,导出数据库一看，字段也成功加了上去，现在从v1到v2升级成功。</p>
+<hr>
+<h3 id="修改原有字段类型，删除原有字段-V2-gt-V3"><a href="#修改原有字段类型，删除原有字段-V2-gt-V3" class="headerlink" title="修改原有字段类型，删除原有字段(V2 -&gt; V3)"></a>修改原有字段类型，删除原有字段(V2 -&gt; V3)</h3><h4 id="实现V3版本"><a href="#实现V3版本" class="headerlink" title="实现V3版本"></a>实现V3版本</h4><p>现在来看看V3版本的Entity发生了什么变化:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Entity</span>(tableName = <span class="string">"user"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">  <span class="meta">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> id;</div><div class="line">  <span class="meta">@NonNull</span></div><div class="line">  <span class="keyword">private</span> String name;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line">  <span class="keyword">private</span> String weight;</div><div class="line">  <span class="keyword">private</span> String sex;</div><div class="line">  ...<span class="comment">//setter,getter</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对比V2版本的Entity，V3版本将<strong>weight</strong>字段的类型从int变为了String，删除了<strong>timestamp</strong>字段，同时给<strong>name</strong>字段加上了@NonNull的注解(这一改动产生的影响稍后说明),接下来我们来看看AppDatabase中的改动：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Database</span>(entities = &#123;User.class&#125;,version = <span class="number">3</span>,exportSchema = <span class="keyword">false</span>)</div><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AppDatabase</span> <span class="keyword">extends</span> <span class="title">RoomDatabase</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> AppDatabase INSTANCE;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME=<span class="string">"user_test.db"</span>;</div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> AppDatabase <span class="title">getINSTANCE</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">      <span class="keyword">synchronized</span> (AppDatabase.class)&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE==<span class="keyword">null</span>)&#123;</div><div class="line">          INSTANCE=Room.databaseBuilder(App.context,AppDatabase.class,DB_NAME)</div><div class="line">              <span class="comment">// .addMigrations(MIGRATION_1_2)</span></div><div class="line">              .addMigrations(MIGRATION_2_3)</div><div class="line">              .build();</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> INSTANCE;</div><div class="line">  &#125;</div><div class="line">  <span class="comment">//上面实现的DAO接口</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> UserDao <span class="title">getUserDao</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> <span class="keyword">final</span> Migration MIGRATION_1_2=<span class="keyword">new</span> Migration(<span class="number">1</span>,<span class="number">2</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">migrate</span><span class="params">(@NonNull SupportSQLiteDatabase database)</span> </span>&#123;</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN weight INTEGER "</span>);</div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user ADD COLUMN sex TEXT"</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line"></div><div class="line">  <span class="keyword">static</span> <span class="keyword">final</span> Migration MIGRATION_2_3=<span class="keyword">new</span> Migration(<span class="number">2</span>,<span class="number">3</span>) &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">migrate</span><span class="params">(@NonNull SupportSQLiteDatabase database)</span> </span>&#123;</div><div class="line">      <span class="comment">//1.创建一个新的符合Entity字段的新表user_new</span></div><div class="line">      database.execSQL(<span class="string">"CREATE TABLE user_new (id INTEGER NOT NULL,"</span></div><div class="line">          + <span class="string">"name TEXT NOT NULL,"</span>       <span class="comment">//关注点1</span></div><div class="line">          + <span class="string">"age INTEGER NOT NULL,"</span>     <span class="comment">//关注点2</span></div><div class="line">          + <span class="string">"weight TEXT,"</span>              <span class="comment">//关注点3</span></div><div class="line">          + <span class="string">"sex TEXT,"</span></div><div class="line">          + <span class="string">"PRIMARY KEY(id))"</span>);</div><div class="line">      <span class="comment">//2.将旧表user中的数据拷贝到新表user_new中</span></div><div class="line">      database.execSQL(<span class="string">"INSERT INTO user_new(id,name,age,weight,sex) "</span></div><div class="line">          + <span class="string">"SELECT id,name,age,weight,sex FROM user"</span>);</div><div class="line">      <span class="comment">//3.删除旧表user</span></div><div class="line">      database.execSQL(<span class="string">"DROP TABLE user"</span>);</div><div class="line">      <span class="comment">//4.将新表user_new重命名为user,升级完毕</span></div><div class="line">      database.execSQL(<span class="string">"ALTER TABLE user_new RENAME TO user"</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对于V2升V3的流程我们可以在上面的注释中了解,现在我们来看看SQL中注释的那三个关注点，对于这三个关注点你可能会提出下面几个疑问：</p>
+<ul>
+<li>1.为什么TEXT类型的name字段加上了NOT NULL的约束?</li>
+<li>2.为什么INTEGER类型的age字段加上了NOT NULL约束？就算加上了NOT NULL为什么不像V1升V2时那样再加上DEFAULT 0之类的初始值?</li>
+<li>3.为什么从INTEGER改为TEXT类型的weight字段不用加上NOT NULL?</li>
+</ul>
+<p>对于这三个疑问我们先不急着回答，我们先来看看Room的数据库升级的过程大致是怎么进行的。</p>
+<h3 id="Room数据库迁移的大致流程"><a href="#Room数据库迁移的大致流程" class="headerlink" title="Room数据库迁移的大致流程"></a>Room数据库迁移的大致流程</h3><blockquote>
+<p>Room中使用了大量的注解,由于我对于注解还不够了解，所以有错误望指正。</p>
+</blockquote>
+<ul>
+<li><p>Room在编译期间通过使用apt来获取注解信息并通过javapoet来生成实现类的代码,以本文中的代码为例,这些实现类的位置在./app/build/generated/source/apt/debug/package/ 中。对于本文中的AppDatabase这个类，Room会生成一个名为AppDatabase_Impl的实现类在上述文件夹中。</p>
+</li>
+<li><p>AppDatabase_Impl实现了4个抽象方法，一个是AppDatabase中的抽象方法,另外三个是AppDatabase的父类<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/runtime/src/main/java/android/arch/persistence/room/RoomDatabase.java?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">RoomDatabase</a>中的三个抽象方法：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//RoomDatabase初始化的时候调用,用于创建数据库,打开连接</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> SupportSQLiteOpenHelper <span class="title">createOpenHelper</span><span class="params">(DatabaseConfiguration config)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//同步内存中数据到数据库</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> InvalidationTracker <span class="title">createInvalidationTracker</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line"><span class="comment">//清空数据</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">clearAllTables</span><span class="params">()</span></span>;</div></pre></td></tr></table></figure>
+<ul>
+<li>在AppDatabase_Impl实现的createOpenHelper方法中创建了<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/runtime/src/main/java/android/arch/persistence/room/RoomOpenHelper.java?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">RoomOpenHelper</a>,并实现了其代理的5个抽象方法:</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Delegate</span> </span>&#123;</div><div class="line">        ......</div><div class="line">        <span class="comment">//删除表,在RoomDatabase.Builder中使用.fallbackToDestructiveMigration()</span></div><div class="line">        <span class="comment">//这种升级策略的时候调用</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">dropAllTables</span><span class="params">(SupportSQLiteDatabase database)</span></span>;</div><div class="line"></div><div class="line">        <span class="comment">//创建表</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">createAllTables</span><span class="params">(SupportSQLiteDatabase database)</span></span>;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(SupportSQLiteDatabase database)</span></span>;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SupportSQLiteDatabase database)</span></span>;</div><div class="line"></div><div class="line">        <span class="comment">//验证数据迁移</span></div><div class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">validateMigration</span><span class="params">(SupportSQLiteDatabase db)</span></span>;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>在createAllTables的实现方法中,从第一条执行的语句我们可以看到<strong>id、name、age</strong>这三个字段都被设定了NOT NULL的约束：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createAllTables</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</div><div class="line">        _db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS `user` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `age` INTEGER NOT NULL, `weight` TEXT, `sex` TEXT)"</span>);</div><div class="line">        _db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)"</span>);</div><div class="line">        _db.execSQL(<span class="string">"INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"671ab1418436cf1c9b78819718f37062\")"</span>);</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Room在检测到数据库版本有更新时会调用<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/runtime/src/main/java/android/arch/persistence/room/RoomOpenHelper.java?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">RoomOpenHelper</a>中的onUpgrade方法:</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SupportSQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</div><div class="line">        <span class="keyword">boolean</span> migrated = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">if</span> (mConfiguration != <span class="keyword">null</span>) &#123;</div><div class="line">            List&lt;Migration&gt; migrations = mConfiguration.migrationContainer.findMigrationPath(</div><div class="line">                    oldVersion, newVersion);</div><div class="line">            <span class="keyword">if</span> (migrations != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">for</span> (Migration migration : migrations) &#123;</div><div class="line">                    migration.migrate(db);</div><div class="line">                &#125;</div><div class="line">                <span class="comment">//验证数据迁移</span></div><div class="line">                mDelegate.validateMigration(db);</div><div class="line">                updateIdentity(db);</div><div class="line">                migrated = <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        ......</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>在onUpgrade方法中又会调用AppDatabase_Impl中实现的validateMigration方法,在这个方法中验证了当前数据库的表结构与根据Entity生成的表结构是否相同,如果校验通过那升级的大致流程就结束了:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">validateMigration</span><span class="params">(SupportSQLiteDatabase _db)</span> </span>&#123;</div><div class="line">      <span class="comment">//将根据Entity生成的Column对象存入map集合</span></div><div class="line">       <span class="keyword">final</span> HashMap&lt;String, TableInfo.Column&gt; _columnsUser = <span class="keyword">new</span> HashMap&lt;String, TableInfo.Column&gt;(<span class="number">6</span>);</div><div class="line">       _columnsUser.put(<span class="string">"id"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"id"</span>, <span class="string">"INTEGER"</span>, <span class="keyword">true</span>, <span class="number">1</span>));</div><div class="line">       _columnsUser.put(<span class="string">"name"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"name"</span>, <span class="string">"TEXT"</span>, <span class="keyword">true</span>, <span class="number">0</span>));</div><div class="line">       _columnsUser.put(<span class="string">"age"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"age"</span>, <span class="string">"INTEGER"</span>, <span class="keyword">true</span>, <span class="number">0</span>));</div><div class="line">       _columnsUser.put(<span class="string">"sex"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"sex"</span>, <span class="string">"TEXT"</span>, <span class="keyword">true</span>, <span class="number">0</span>));</div><div class="line">       _columnsUser.put(<span class="string">"timestamp"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"timestamp"</span>, <span class="string">"INTEGER"</span>, <span class="keyword">true</span>, <span class="number">0</span>));</div><div class="line">       _columnsUser.put(<span class="string">"weight"</span>, <span class="keyword">new</span> TableInfo.Column(<span class="string">"weight"</span>, <span class="string">"INTEGER"</span>, <span class="keyword">true</span>, <span class="number">0</span>));</div><div class="line">       <span class="keyword">final</span> HashSet&lt;TableInfo.ForeignKey&gt; _foreignKeysUser = <span class="keyword">new</span> HashSet&lt;TableInfo.ForeignKey&gt;(<span class="number">0</span>);</div><div class="line">       <span class="keyword">final</span> HashSet&lt;TableInfo.Index&gt; _indicesUser = <span class="keyword">new</span> HashSet&lt;TableInfo.Index&gt;(<span class="number">0</span>);</div><div class="line">       <span class="comment">//上方创建的TableInfo</span></div><div class="line">       <span class="keyword">final</span> TableInfo _infoUser = <span class="keyword">new</span> TableInfo(<span class="string">"user"</span>, _columnsUser, _foreignKeysUser, _indicesUser);</div><div class="line">       <span class="comment">//读取当前数据库中的TableInfo</span></div><div class="line">       <span class="keyword">final</span> TableInfo _existingUser = TableInfo.read(_db, <span class="string">"user"</span>);</div><div class="line">       <span class="comment">//判断这两个TableInfo是否相同，是不是感觉有点眼熟~_~!</span></div><div class="line">       <span class="keyword">if</span> (! _infoUser.equals(_existingUser)) &#123;</div><div class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Migration didn't properly handle user(cc.noharry.dbtest.User).\n"</span></div><div class="line">                 + <span class="string">" Expected:\n"</span> + _infoUser + <span class="string">"\n"</span></div><div class="line">                 + <span class="string">" Found:\n"</span> + _existingUser);</div><div class="line">       &#125;</div><div class="line">     &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>之前在V1升V2的例子中因为缺少NOT NULL的约束导致在这一步中断了升级,那究竟应该如何判断是否应该加上这个约束呢？下面我们从源码中看看能不能发现问题的根源。</p>
+</li>
+</ul>
+<h3 id="Room源码"><a href="#Room源码" class="headerlink" title="Room源码"></a>Room源码</h3><blockquote>
+<p>由于这次我们看的源码在<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">compiler</a>包中，官方用kotlin作为编码语言，鉴于我的kotlin水平还处于听过的水平，那我们试试联系上下文来完成这次的“阅读理解”吧，有错误的地方欢迎大家批评指正。</p>
+</blockquote>
+<ul>
+<li><p>首先来到入口类<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/RoomProcessor.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">RoomProcessor.kt</a>中的初始化方法:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initSteps</span><span class="params">()</span></span>: MutableIterable&lt;ProcessingStep&gt;? &#123;</div><div class="line">        <span class="keyword">val</span> context = Context(processingEnv)</div><div class="line">        <span class="keyword">return</span> arrayListOf(DatabaseProcessingStep(context))</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>接着来到DatabaseProcessingStep类中的process方法:</p>
+</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">process</span><span class="params">(elementsByAnnotation: <span class="type">SetMultimap</span>&lt;<span class="type">Class</span>&lt;<span class="type">out</span> <span class="type">Annotation</span>&gt;, Element&gt;)</span></span></div><div class="line">               : MutableSet&lt;Element&gt; &#123;</div><div class="line">           <span class="comment">// 遍历注解获取所有的信息</span></div><div class="line">           <span class="keyword">val</span> databases = elementsByAnnotation[Database::<span class="class"><span class="keyword">class</span>.<span class="title">java</span>]</span></div><div class="line">                   ?.map &#123;</div><div class="line">                       DatabaseProcessor(context, MoreElements.asType(it)).process()</div><div class="line">                   &#125;</div><div class="line">          <span class="comment">// 获取Dao注解中的所有方法</span></div><div class="line">           <span class="keyword">val</span> allDaoMethods = databases?.flatMap &#123; it.daoMethods &#125;</div><div class="line">           <span class="comment">// 用获取到的Dao中的方法生成实现类</span></div><div class="line">           allDaoMethods?.let &#123;</div><div class="line">               prepareDaosForWriting(databases, it)</div><div class="line">               it.forEach &#123;</div><div class="line">                   DaoWriter(it.dao, context.processingEnv).write(context.processingEnv)</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">           <span class="comment">//用获取到的database中的信息生成实现类，也就是上面例子中的AppDatabase_Impl</span></div><div class="line">           databases?.forEach &#123; db -&gt;</div><div class="line">               DatabaseWriter(db).write(context.processingEnv)</div><div class="line">          <span class="comment">//根据database中注解的exportSchema的值决定是否生成schema文件</span></div><div class="line">               <span class="keyword">if</span> (db.exportSchema) &#123;</div><div class="line">                   <span class="keyword">val</span> schemaOutFolder = context.schemaOutFolder</div><div class="line">                   <span class="keyword">if</span> (schemaOutFolder == <span class="literal">null</span>) &#123;</div><div class="line">                       context.logger.w(Warning.MISSING_SCHEMA_LOCATION, db.element,</div><div class="line">                               ProcessorErrors.MISSING_SCHEMA_EXPORT_DIRECTORY)</div><div class="line">                   &#125; <span class="keyword">else</span> &#123;</div><div class="line">                       <span class="keyword">if</span> (!schemaOutFolder.exists()) &#123;</div><div class="line">                           schemaOutFolder.mkdirs()</div><div class="line">                       &#125;</div><div class="line">                       <span class="keyword">val</span> qName = db.element.qualifiedName.toString()</div><div class="line">                       <span class="keyword">val</span> dbSchemaFolder = File(schemaOutFolder, qName)</div><div class="line">                       <span class="keyword">if</span> (!dbSchemaFolder.exists()) &#123;</div><div class="line">                           dbSchemaFolder.mkdirs()</div><div class="line">                       &#125;</div><div class="line">                       db.exportSchema(File(dbSchemaFolder, <span class="string">"<span class="subst">$&#123;db.version&#125;</span>.json"</span>))</div><div class="line">                   &#125;</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">           <span class="keyword">return</span> mutableSetOf()</div><div class="line">       &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>从上面的注释中我们可以看到databases中的元素通过<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/DatabaseWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">DatabaseWriter</a>的父类<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/ClassWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">ClassWriter</a>中的write方法生成实现类,下面我们进入<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/DatabaseWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">DatabaseWriter.kt</a>看看生成createOpenHelper方法的语句：</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">createCreateOpenHelper</span><span class="params">()</span></span> : MethodSpec &#123;</div><div class="line">       <span class="keyword">val</span> scope = CodeGenScope(<span class="keyword">this</span>)</div><div class="line">       <span class="keyword">return</span> MethodSpec.methodBuilder(<span class="string">"createOpenHelper"</span>).apply &#123;</div><div class="line">           addModifiers(Modifier.PROTECTED)</div><div class="line">           returns(SupportDbTypeNames.SQLITE_OPEN_HELPER)</div><div class="line"></div><div class="line">           <span class="keyword">val</span> configParam = ParameterSpec.builder(RoomTypeNames.ROOM_DB_CONFIG,</div><div class="line">                   <span class="string">"configuration"</span>).build()</div><div class="line">           addParameter(configParam)</div><div class="line"></div><div class="line">           <span class="keyword">val</span> openHelperVar = scope.getTmpVar(<span class="string">"_helper"</span>)</div><div class="line">           <span class="keyword">val</span> openHelperCode = scope.fork()</div><div class="line">           SQLiteOpenHelperWriter(database)</div><div class="line">                   .write(openHelperVar, configParam, openHelperCode)</div><div class="line">           addCode(openHelperCode.builder().build())</div><div class="line">           addStatement(<span class="string">"return <span class="variable">$L</span>"</span>, openHelperVar)</div><div class="line">       &#125;.build()</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>找到生成openHelper的方法SQLiteOpenHelperWriter(database).write(openHelperVar, configParam, openHelperCode),<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/SQLiteOpenHelperWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">SQLiteOpenHelperWriter.kt</a>:</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">createValidateMigration</span><span class="params">(scope: <span class="type">CodeGenScope</span>)</span></span>: MethodSpec &#123;</div><div class="line">        <span class="keyword">return</span> MethodSpec.methodBuilder(<span class="string">"validateMigration"</span>).apply &#123;</div><div class="line">            addModifiers(PROTECTED)</div><div class="line">            <span class="keyword">val</span> dbParam = ParameterSpec.builder(SupportDbTypeNames.DB, <span class="string">"_db"</span>).build()</div><div class="line">            addParameter(dbParam)</div><div class="line">            <span class="comment">//遍历从database中获取到的关于Entity注解的信息，生成相应TableInfo.Column的代码</span></div><div class="line">            database.entities.forEach &#123; entity -&gt;</div><div class="line">                <span class="keyword">val</span> methodScope = scope.fork()</div><div class="line">                TableInfoValidationWriter(entity).write(dbParam, methodScope)</div><div class="line">                addCode(methodScope.builder().build())</div><div class="line">            &#125;</div><div class="line">        &#125;.build()</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>在<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/SQLiteOpenHelperWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">SQLiteOpenHelperWriter.kt</a>中找到了生成validateMigration的方法,现在我们离最后的真相又进了一步，现在进入<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/writer/TableInfoValidationWriter.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">TableInfoValidationWriter.kt</a>看看：</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">TableInfoValidationWriter</span></span>(<span class="keyword">val</span> entity : Entity) &#123;</div><div class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">write</span><span class="params">(dbParam : <span class="type">ParameterSpec</span>, scope : <span class="type">CodeGenScope</span>)</span></span> &#123;</div><div class="line">        <span class="keyword">val</span> suffix = entity.tableName.stripNonJava().capitalize()</div><div class="line">        <span class="keyword">val</span> expectedInfoVar = scope.getTmpVar(<span class="string">"_info<span class="variable">$suffix</span>"</span>)</div><div class="line">        scope.builder().apply &#123;</div><div class="line">            <span class="keyword">val</span> columnListVar = scope.getTmpVar(<span class="string">"_columns<span class="variable">$suffix</span>"</span>)</div><div class="line">            <span class="keyword">val</span> columnListType = ParameterizedTypeName.<span class="keyword">get</span>(HashMap::<span class="class"><span class="keyword">class</span>.<span class="title">typeName</span></span>(),</div><div class="line">                    CommonTypeNames.STRING, RoomTypeNames.TABLE_INFO_COLUMN)</div><div class="line"></div><div class="line">            addStatement(<span class="string">"final <span class="variable">$T</span> <span class="variable">$L</span> = new <span class="variable">$T</span>(<span class="variable">$L</span>)"</span>, columnListType, columnListVar,</div><div class="line">                    columnListType, entity.fields.size)</div><div class="line">            <span class="comment">//遍历entity中的field获取属性，生成相应代码</span></div><div class="line">            entity.fields.forEach &#123; field -&gt;</div><div class="line">                addStatement(<span class="string">"<span class="variable">$L</span>.put(<span class="variable">$S</span>, new <span class="variable">$T</span>(<span class="variable">$S</span>, <span class="variable">$S</span>, <span class="variable">$L</span>, <span class="variable">$L</span>))"</span>,</div><div class="line">                        columnListVar, field.columnName, RoomTypeNames.TABLE_INFO_COLUMN,</div><div class="line">                        <span class="comment">/*name*/</span> field.columnName,</div><div class="line">                        <span class="comment">/*type*/</span> field.affinity?.name ?: SQLTypeAffinity.TEXT.name,</div><div class="line">            <span class="comment">// 注意：我们现在发现了NOT NULL</span></div><div class="line">                        <span class="comment">/*nonNull*/</span> field.nonNull,</div><div class="line">                        <span class="comment">/*pkeyPos*/</span> entity.primaryKey.fields.indexOf(field) + <span class="number">1</span>)</div><div class="line"></div><div class="line">                        ....</div><div class="line">            &#125;</div><div class="line"></div><div class="line">          &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>现在我们发现了NOT NULL的约束，它看起来是field的属性，我们到<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/vo/Field.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">Field.kt</a>中看一下:</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Field</span></span>(<span class="keyword">val</span> element: Element, <span class="keyword">val</span> name: String, <span class="keyword">val</span> type: TypeMirror,</div><div class="line">                 <span class="keyword">var</span> affinity: SQLTypeAffinity?,</div><div class="line">                 <span class="keyword">val</span> collate: Collate? = <span class="literal">null</span>,</div><div class="line">                 <span class="keyword">val</span> columnName: String = name,</div><div class="line">                 <span class="comment">/* means that this field does not belong to parent, instead, it belongs to a</span></div><div class="line">                 * embedded child of the main Pojo*/</div><div class="line">                 <span class="keyword">val</span> parent: EmbeddedField? = <span class="literal">null</span>,</div><div class="line">                 <span class="comment">// index might be removed when being merged into an Entity</span></div><div class="line">                 <span class="keyword">var</span> indexed : <span class="built_in">Boolean</span> = <span class="literal">false</span>) &#123;</div><div class="line"></div><div class="line">                   <span class="comment">/** Whether the table column for this field should be NOT NULL */</span></div><div class="line">                       <span class="keyword">val</span> nonNull = element.isNonNull() &amp;&amp; (parent == <span class="literal">null</span> || parent.isNonNullRecursively())</div><div class="line"></div><div class="line">                       .....</div><div class="line">                   &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>现在我们进入<a href="https://android.googlesource.com/platform/frameworks/support/+/master/room/compiler/src/main/kotlin/android/arch/persistence/room/ext/element_ext.kt?autodive=0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F" target="_blank" rel="external">element_ext.kt</a>看下isNonNull()方法:</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fun</span> Element.<span class="title">isNonNull</span><span class="params">()</span></span> =</div><div class="line">        asType().kind.isPrimitive</div><div class="line">                || hasAnnotation(android.support.<span class="keyword">annotation</span>.NonNull::<span class="class"><span class="keyword">class</span>)</span></div><div class="line">                || hasAnnotation(org.jetbrains.annotations.NotNull::<span class="class"><span class="keyword">class</span>)</span></div></pre></td></tr></table></figure>
+<ul>
+<li><strong>真相终于找到了！</strong>一共三个条件判断其类型是不是Primitive，是否包含Android中的NonNull注解，是否包含kotlin中的NonNull注解，而<a href="http://www.docjar.com/html/api/javax/lang/model/type/TypeKind.java.html" target="_blank" rel="external">isPrimitive</a>是OpenJdk中的方法，也就是判断其类型是不是基础类型：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPrimitive</span><span class="params">()</span> </span>&#123;</div><div class="line">             <span class="keyword">switch</span>(<span class="keyword">this</span>) &#123;</div><div class="line">             <span class="keyword">case</span> BOOLEAN:</div><div class="line">             <span class="keyword">case</span> BYTE:</div><div class="line">             <span class="keyword">case</span> SHORT:</div><div class="line">             <span class="keyword">case</span> INT:</div><div class="line">             <span class="keyword">case</span> LONG:</div><div class="line">             <span class="keyword">case</span> CHAR:</div><div class="line">             <span class="keyword">case</span> FLOAT:</div><div class="line">             <span class="keyword">case</span> DOUBLE:</div><div class="line">                 <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line"></div><div class="line">             <span class="keyword">default</span>:</div><div class="line">                 <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">             &#125;</div><div class="line">         &#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>现在可以回答V2-&gt;V3中的三个疑问了</p>
+<p>1.name 字段加上NOT NULL约束是因为Entity中加上了@NonNull注解</p>
+<p>2.age 字段加上NOT NULL约束是因为int是基本类型，同时因为非空所以要加上初始值</p>
+<p>3.weight 字段虽然之前在数据库是INTEGER类型的需要NOT NULL约束，但在变成TEXT类型后Room已经不会自动给他加上NOT NULL约束，因此不需要加上NOT NULL</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>现在我们知道了在Room中所有<strong>基本类型</strong>的字段，和<strong>@NonNull注解</strong>的字段都会加上NOT NULL约束，在数据库升级时我们在写migrate方法时尤其需要注意</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/10/24/AndroidBLE快速上手指南/" data-toggle="tooltip" data-placement="top" title="Android BLE 快速上手指南">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/06/28/Blelib使用说明/" data-toggle="tooltip" data-placement="top" title="Blelib 使用说明">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#Room" title="Room">Room</a>
+                        
+                          <a class="tag" href="/tags/#android-architecture-components" title="android-architecture-components">android-architecture-components</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "noharry";
+    var disqus_identifier = "http://noharry.cc/2018/07/23/Room版本迁移遇到的问题/";
+    var disqus_url = "http://noharry.cc/2018/07/23/Room版本迁移遇到的问题/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NoHarry">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; NoHarry&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://noharry.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-116830402-1';
+    var _gaDomain = 'noharry.cc';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

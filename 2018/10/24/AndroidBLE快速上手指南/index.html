@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android BLE 快速上手指南 - NoHarry的博客 | NoHarry&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://noharry.cc/2018/10/24/AndroidBLE快速上手指南/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">NoHarry&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/Archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#BLE" title="BLE">BLE</a>
+                        
+                          <a class="tag" href="/tags/#bluetooth-low-energy" title="bluetooth-low-energy">bluetooth-low-energy</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                    <h1>Android BLE 快速上手指南</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NoHarry on
+                        2018-10-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p> 本文旨在提供一个方便没接触过Android上低功耗蓝牙(Bluetooth Low Energy)的同学快速上手使用的简易教程，因此对其中的一些细节不做过分深入的探讨，此外，为了让没有Ble设备的同学也能模拟与设备的交互过程，本文还提供了中央设备(central)和外围设备(peripheral)的示例代码，只需2部手机大家就可以愉快的“左右互搏”了。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h3><p>  上面我们提到了中央设备(central)和外围设备(peripheral),在这里我们可以这样简单的理解:</p>
+<ul>
+<li>中央设备(central)：收到外围设备发出的广播信号后能主动发起连接的主设备，例如我们给摩拜单车开锁时我们的手机就是作为中央设备连接单车并进行开锁等一系列操作的，<a href="https://www.zhihu.com/question/25120915" target="_blank" rel="external">通常情况</a>下同一时间一台中央设备只能与最多7台外围设备建立连接。</li>
+<li>外围设备(peripheral):能被中央设备连接的从设备，同一时间外围设备只能被一个中央设备连接。</li>
+</ul>
+<p><strong>注</strong>：Android从4.3(API Level 18) 开始支持低功耗蓝牙，但是刚开始只支持作为中央设备（central）模式，从 Android 5.0(API Level 21) 开始才支持作为外围设备(peripheral)的模式，因此我们最好使用Android 5.0以上版本的手机进行下面的操作。</p>
+<h3 id="需要的权限"><a href="#需要的权限" class="headerlink" title="需要的权限"></a>需要的权限</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.BLUETOOTH"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.BLUETOOTH_ADMIN"</span> /&gt;</div><div class="line">&lt;uses-permission android:name=<span class="string">"android.permission.ACCESS_COARSE_LOCATION"</span>/&gt;</div><div class="line"><span class="comment">//使用ble扫描时还需要我们到’设置 &gt; 安全性和位置信息 &gt; 位置信息‘处打开位置信息，</span></div><div class="line"><span class="comment">//否则将会搜索不到周围的设备</span></div></pre></td></tr></table></figure>
+<p>可能有人会问<a href="https://source.android.google.cn/devices/bluetooth/ble" target="_blank" rel="external">为什么使用低功耗蓝牙还需要位置权限</a>?简单来说就是蓝牙也有定位的功能。</p>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><ul>
+<li><a href="https://github.com/NoHarry/BleServer" target="_blank" rel="external">外围设备</a></li>
+<li><a href="https://github.com/NoHarry/BleExample" target="_blank" rel="external">中央设备</a></li>
+</ul>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>  接下来我们就准备开始实际操作了，首先我们准备2台手机，手机A作为中央设备，手机B作为外围设备,在打开B手机的ble广播后，我们使用A手机进行<strong>打开蓝牙</strong>–&gt;<strong>扫描</strong>–&gt;<strong>连接</strong>–&gt;<strong>获取服务，特征</strong>–&gt;<strong>打开通知</strong>–&gt;<strong>写特征</strong>–&gt;<strong>读特征</strong>–&gt;<strong>断开连接</strong>,通过这些步骤我们就能学会Android Ble 的基本方法的使用。</p>
+<blockquote>
+<p>从扫描开始，接下来的这些操作中你可能会遇到各种奇奇怪怪的问题，为了减少大家踩坑的概率，我会在后面的操作中分享一些可能会遇到的问题和解决方法，有的问题在官方文档中可能有提到，有的在一些论坛帖子中有提及，还有的一些就是自己的经验之谈。</p>
+</blockquote>
+<h3 id="打开蓝牙"><a href="#打开蓝牙" class="headerlink" title="打开蓝牙"></a>打开蓝牙</h3><p>打开蓝牙有以下两种方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//方法一</span></div><div class="line">BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();</div><div class="line"><span class="keyword">if</span> (mBluetoothAdapter != <span class="keyword">null</span>)&#123;</div><div class="line">  mBluetoothAdapter.enable();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//方法二</span></div><div class="line">BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">BluetoothAdapter mBluetoothAdapter = bluetoothManager.getAdapter();</div><div class="line"><span class="keyword">if</span> (!mBluetoothAdapter.isEnabled() &amp;&amp; !mBluetoothAdapter.isEnabled()) &#123;</div><div class="line">  Intent enableBtIntent = <span class="keyword">new</span> Intent(</div><div class="line">      BluetoothAdapter.ACTION_REQUEST_ENABLE);</div><div class="line">  startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>使用方法一将会直接打开蓝牙，使用方法二会跳转到系统Activity由用户手动打开蓝牙</li>
+</ul>
+<h3 id="扫描"><a href="#扫描" class="headerlink" title="扫描"></a>扫描</h3><p>扫描是一个非常耗电的操作，因此当我们找到我们需要的设备后应该马上停止扫描。官方提供了2个扫描的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//旧API</span></div><div class="line"><span class="comment">//启动扫描</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scan</span><span class="params">()</span></span>&#123;</div><div class="line">  BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">  bluetoothManager.getAdapter().startLeScan(mLeScanCallback);</div><div class="line"></div><div class="line">  <span class="comment">//如果想要指定搜索设备，可以使用下面这个构造方法，传入外围设备广播出的服务的UUID数组</span></div><div class="line">  UUID[] uuids=<span class="keyword">new</span> UUID[]&#123;UUID_ADV_SERVER&#125;;</div><div class="line">  bluetoothManager.getAdapter().startLeScan(uuids,mLeScanCallback);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//停止扫描</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopScan</span><span class="params">()</span></span>&#123;</div><div class="line">  BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">  bluetoothManager.getAdapter().stopLeScan(mLeScanCallback);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//扫描结果回调</span></div><div class="line">LeScanCallback mLeScanCallback = <span class="keyword">new</span> LeScanCallback() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLeScan</span><span class="params">(BluetoothDevice device, <span class="keyword">int</span> rssi, <span class="keyword">byte</span>[] scanRecord)</span> </span>&#123;</div><div class="line">      <span class="comment">//device:扫描到的蓝牙设备对象</span></div><div class="line">      <span class="comment">//rssi：扫描到的设备的信号强度，这是一个负值，值越大代表信号强度越大</span></div><div class="line">      <span class="comment">//scanRecord:扫描到的设备广播的数据,包含设备名，服务UUID等</span></div><div class="line">    &#125;</div><div class="line">  &#125;;</div></pre></td></tr></table></figure>
+<p>↑ 这是个在Android 5.0时被标注deprecated的API，该方法目前仍能使用。由于onLeScan中回调出的设备的广播数据需要自己手动解析,这是个比较麻烦的过程。</p>
+<p><img src="advData.png" alt="advData"></p>
+<p>在新的API中已经封装了方法来解析广播数据，如果为了适配性使用这个旧的扫描方法，同时又希望解析得到广播中的数据，我们可以使用源码中<a href="http://androidxref.com/8.0.0_r4/xref/frameworks/base/core/java/android/bluetooth/le/ScanRecord.java" target="_blank" rel="external">新API使用的解析方法</a>(需要稍许修改，直接使用会报错),或者使用<a href="https://github.com/NoHarry/BLELib/blob/master/blelib/src/main/java/cc/noharry/blelib/data/ScanRecord.java" target="_blank" rel="external">我自己修改过的方法</a>,如果你想了解更多关于广播数据的解析可以看<a href="https://www.bluetooth.com/specifications/bluetooth-core-specification" target="_blank" rel="external">Core Specifications 5.0</a>中Volume 3, Part C, Section 11这一节。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//新API,需要Android 5.0(API Level 21)及以上版本才能使用</span></div><div class="line"><span class="comment">//启动扫描</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scanNew</span><span class="params">()</span> </span>&#123;</div><div class="line">  BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">  <span class="comment">//基本的扫描方法</span></div><div class="line">  bluetoothManager</div><div class="line">      .getAdapter()</div><div class="line">      .getBluetoothLeScanner()</div><div class="line">      .startScan(mScanCallback);</div><div class="line"></div><div class="line"></div><div class="line">  <span class="comment">//设置一些扫描参数</span></div><div class="line">  ScanSettings settings=<span class="keyword">new</span> ScanSettings</div><div class="line">      .Builder()</div><div class="line">      <span class="comment">//例如这里设置的低延迟模式，也就是更快的扫描到周围设备，相应耗电也更厉害</span></div><div class="line">      .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)</div><div class="line">      .build();</div><div class="line"></div><div class="line">  <span class="comment">//你需要设置的过滤条件,不只可以像旧API中的按服务UUID过滤</span></div><div class="line">  <span class="comment">//还可以按设备名称，MAC地址等条件过滤</span></div><div class="line">  List&lt;ScanFilter&gt; scanFilters=<span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">  <span class="comment">//如果你需要过滤扫描到的设备可以用下面的这种构造方法</span></div><div class="line">  bluetoothManager</div><div class="line">      .getAdapter()</div><div class="line">      .getBluetoothLeScanner()</div><div class="line">      .startScan(scanFilters,settings,mScanCallback);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//扫描结果回调</span></div><div class="line">ScanCallback mScanCallback = <span class="keyword">new</span> ScanCallback() &#123;</div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onScanResult</span><span class="params">(<span class="keyword">int</span> callbackType, ScanResult result)</span> </span>&#123;</div><div class="line">      <span class="comment">//callbackType:扫描模式</span></div><div class="line">      <span class="comment">//result：扫描到的设备数据，包含蓝牙设备对象，解析完成的广播数据等</span></div><div class="line">   &#125;</div><div class="line"> &#125;;</div><div class="line"></div><div class="line"><span class="comment">//停止扫描</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">stopNewScan</span><span class="params">()</span></span>&#123;</div><div class="line">  BluetoothManager bluetoothManager= (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);</div><div class="line">  bluetoothManager.getAdapter().getBluetoothLeScanner().stopScan(mScanCallback);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>  相比旧API,新API的功能更全面，但是需要Android 5.0以上才能使用，究竟需要使用哪种方法，大家可以根据自己的实际情况选择。</p>
+<blockquote>
+<p><strong>注意坑来了：</strong></p>
+</blockquote>
+<ul>
+<li><p>1.如果搜索不到设备，请检查对于Android 6.0及以上版本ACCESS_COARSE_LOCATION或者ACCESS_FINE_LOCATION权限是否已经动态授予，同时检查位置信息(也就是GPS)是否已经打开，一般来说搜不到设备就是这两个原因。</p>
+</li>
+<li><p>2.不管是新旧API的扫描结果回调都是不停的回调扫描到的设备，就算是相同的设备也会重复回调,直到你停止扫描，因此最好不要在回调方法中做过多的耗时操作,否则可能会出现<a href="https://issuetracker.google.com/issues/36989120" target="_blank" rel="external">这个问题</a>，如果需要处理回调的数据可以把数据放到另外一个线程处理，让回调尽快返回。</p>
+</li>
+</ul>
+<h3 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h3><p>同一时间我们只能对一个外围设备发起连接，如果需要对多个设备连接可以等上一个连接成功后再进行下一个连接，否则如果前面的某个连接操作失败了没有回调，后面的操作会被一直阻塞。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//发起连接</span></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(BluetoothDevice device)</span></span>&#123;</div><div class="line">  mBluetoothGatt = device.connectGatt(context, <span class="keyword">false</span>, mBluetoothGattCallback);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//Gatt操作回调，此回调很重要，后面所有的操作结果都会在此方法中回调</span></div><div class="line">BluetoothGattCallback mBluetoothGattCallback = <span class="keyword">new</span> BluetoothGattCallback() &#123;</div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConnectionStateChange</span><span class="params">(BluetoothGatt gatt, <span class="keyword">int</span> status, <span class="keyword">int</span> newState)</span> </span>&#123;</div><div class="line">     <span class="comment">//gatt:GATT客户端</span></div><div class="line">     <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">     <span class="comment">//newState:当前连接处于的状态，例如连接成功，断开连接等</span></div><div class="line"></div><div class="line">     <span class="comment">//当连接状态改变时触发此回调</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServicesDiscovered</span><span class="params">(BluetoothGatt gatt, <span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line">     <span class="comment">//gatt:GATT客户端</span></div><div class="line">     <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line"></div><div class="line">     <span class="comment">//成功获取服务时触发此回调，“获取服务，特征”一节会介绍</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicRead</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">       <span class="keyword">final</span> BluetoothGattCharacteristic characteristic, <span class="keyword">final</span> <span class="keyword">int</span> status) &#123;</div><div class="line">         <span class="comment">//gatt:GATT客户端</span></div><div class="line">         <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">         <span class="comment">//characteristic:被读的特征</span></div><div class="line"></div><div class="line">         <span class="comment">//当对特征的读操作完成时触发此回调，“读特征”一节会介绍</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicWrite</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">       <span class="keyword">final</span> BluetoothGattCharacteristic characteristic, <span class="keyword">final</span> <span class="keyword">int</span> status) &#123;</div><div class="line">         <span class="comment">//gatt:GATT客户端</span></div><div class="line">         <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">         <span class="comment">//characteristic:被写的特征</span></div><div class="line"></div><div class="line">         <span class="comment">//当对特征的写操作完成时触发此回调，“写特征”一节会介绍</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicChanged</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">       <span class="keyword">final</span> BluetoothGattCharacteristic characteristic) &#123;</div><div class="line">         <span class="comment">//gatt:GATT客户端</span></div><div class="line">         <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">         <span class="comment">//characteristic：特征值改变的特征</span></div><div class="line"></div><div class="line">         <span class="comment">//当特征值改变时触发此回调，“打开通知”一节会介绍</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDescriptorRead</span><span class="params">(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,</span></span></div><div class="line">       <span class="keyword">int</span> status) &#123;</div><div class="line">         <span class="comment">//gatt:GATT客户端</span></div><div class="line">         <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">         <span class="comment">//descriptor:被读的descriptor</span></div><div class="line"></div><div class="line">         <span class="comment">//当对descriptor的读操作完成时触发</span></div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDescriptorWrite</span><span class="params">(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,</span></span></div><div class="line">       <span class="keyword">int</span> status) &#123;</div><div class="line">         <span class="comment">//gatt:GATT客户端</span></div><div class="line">         <span class="comment">//status:此次操作的状态码，返回0时代表操作成功，返回其他值就是各种异常</span></div><div class="line">         <span class="comment">//descriptor:被写的descriptor</span></div><div class="line"></div><div class="line">         <span class="comment">//当对descriptor的写操作完成时触发，“打开通知”一节会介绍</span></div><div class="line">   &#125;</div><div class="line"> &#125;;</div></pre></td></tr></table></figure>
+<p>当我们调用connectGatt方法后会触发onConnectionStateChange这个回调，回调中的status我们用来判断这次操作的成功与否，newState用来判断当前的连接状态。</p>
+<blockquote>
+<p><strong>注意坑来了：</strong></p>
+</blockquote>
+<ul>
+<li>我们在调用<strong>连接</strong>和<strong>断开连接</strong>这两方法的时候最好放到<strong>主线程</strong>调用，否则可能会在一些手机上遇到<a href="https://stackoverflow.com/questions/20069507/gatt-callback-fails-to-register/20507449#20507449" target="_blank" rel="external">奇怪的问题</a></li>
+</ul>
+<h3 id="获取服务，特征"><a href="#获取服务，特征" class="headerlink" title="获取服务，特征"></a>获取服务，特征</h3><p>当我们连接成功后，GATT客户端(手机A)可以通过发现方法检索GATT服务端(手机B)的服务和特征，以便后面操作使用。</p>
+<p><img src="Stack_GATT_Profile_Structure.png" alt="Stack_GATT_Profile_Structure"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//连接成功后掉用发现服务</span></div><div class="line">gatt.discoverServices();</div><div class="line"></div><div class="line">    <span class="comment">//当服务检索完成后会回调该方法,检索完成后我们就可以拿到需要的服务和特征</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServicesDiscovered</span><span class="params">(BluetoothGatt gatt, <span class="keyword">int</span> status)</span> </span>&#123;</div><div class="line"></div><div class="line">      <span class="comment">//获取特定UUID的服务</span></div><div class="line">      BluetoothGattService service = gatt.getService(UUID_SERVER);</div><div class="line"></div><div class="line">      <span class="comment">//获取所有服务</span></div><div class="line">      List&lt;BluetoothGattService&gt; services = gatt.getServices();</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (service!=<span class="keyword">null</span>)&#123;</div><div class="line"></div><div class="line">        <span class="comment">//获取该服务下特定UUID的特征</span></div><div class="line">        mCharacteristic = service.getCharacteristic(UUID_CHARWRITE);</div><div class="line"></div><div class="line">        <span class="comment">//获取该服务下所有特征</span></div><div class="line">        List&lt;BluetoothGattCharacteristic&gt; characteristics = service.getCharacteristics();</div><div class="line"></div><div class="line">      &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h3 id="打开通知"><a href="#打开通知" class="headerlink" title="打开通知"></a>打开通知</h3><p>打开通知<a href="https://developer.android.com/guide/topics/connectivity/bluetooth-le#notification" target="_blank" rel="external">官方的标准做法</a>分两步:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//官方文档做法</span></div><div class="line"><span class="keyword">private</span> BluetoothGatt mBluetoothGatt;</div><div class="line">BluetoothGattCharacteristic characteristic;</div><div class="line"><span class="keyword">boolean</span> enabled;</div><div class="line">...</div><div class="line"><span class="comment">//第一步，开启手机A(本地)对这个特征的通知</span></div><div class="line">mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);</div><div class="line">...</div><div class="line"><span class="comment">//第二步，通过对手机B(远程)中需要开启通知的那个特征的CCCD写入开启通知命令，来打开通知</span></div><div class="line">BluetoothGattDescriptor descriptor = characteristic.getDescriptor(</div><div class="line">        UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));</div><div class="line">descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);</div><div class="line">mBluetoothGatt.writeDescriptor(descriptor);</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>由于Android7.0以前版本存在一个bug:对descriptor的写操作会复用父特征的写入类型，这个bug在7.0之后进行了<a href="https://android.googlesource.com/platform/frameworks/base/+/942aebc95924ab1e7ea1e92aaf4e7fc45f695a6c%5E%21/" target="_blank" rel="external">修复</a>,为了提高兼容性，我们可以对官方做法稍许修改：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> BluetoothGatt mBluetoothGatt;</div><div class="line">BluetoothGattCharacteristic characteristic;</div><div class="line"><span class="keyword">boolean</span> enabled;</div><div class="line">...</div><div class="line"><span class="comment">//第一步，开启手机A(本地)对这个特征的通知</span></div><div class="line">mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);</div><div class="line">...</div><div class="line"><span class="comment">//第二步，通过对手机B(远程)中需要开启通知的那个特征的CCCD写入开启通知命令，来打开通知</span></div><div class="line">BluetoothGattDescriptor descriptor = characteristic.getDescriptor(</div><div class="line">        UUID.fromString(SampleGattAttributes.CLIENT_CHARACTERISTIC_CONFIG));</div><div class="line"><span class="comment">//获取特征的写入类型，用于后面还原</span></div><div class="line"><span class="keyword">int</span> parentWriteType = characteristic.getWriteType();</div><div class="line"><span class="comment">//设置特征的写入类型为默认类型</span></div><div class="line">characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);</div><div class="line">descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);</div><div class="line">mBluetoothGatt.writeDescriptor(descriptor);</div><div class="line"><span class="comment">//还原特征的写入类型</span></div><div class="line">characteristic.setWriteType(parentWriteType);</div></pre></td></tr></table></figure>
+<p>接下来我们来看看回调</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicChanged</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">    <span class="keyword">final</span> BluetoothGattCharacteristic characteristic) &#123;</div><div class="line">    <span class="comment">//当手机B的通知发过来的时候会触发这个回调</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDescriptorWrite</span><span class="params">(BluetoothGatt gatt, BluetoothGattDescriptor descriptor,</span></span></div><div class="line">    <span class="keyword">int</span> status) &#123;</div><div class="line">  <span class="comment">//第二步会触发此回调</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意:</strong></p>
+</blockquote>
+<ul>
+<li>对于有的设备可能我们只需要执行第一步就能收到通知，但是为了保险起见我们最好两步都做，以防出现<a href="https://stackoverflow.com/questions/22817005/why-does-setcharacteristicnotification-not-actually-enable-notifications" target="_blank" rel="external">通知开启无效</a>的情况。</li>
+<li>再次<strong>强调</strong>读、写、通知等这些GATT的操作都只能串行的使用，并且在执行下一个任务前必须保证上一个任务已经完成并且成功回调，否则可能出现后面的任务都阻塞无法进行的情况。</li>
+<li>对于开启通知这个操作触发<strong>onDescriptorWrite</strong>时代表任务完成，可以进行下一个GATT操作。</li>
+</ul>
+<h3 id="写特征"><a href="#写特征" class="headerlink" title="写特征"></a>写特征</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//默认的写入类型，需要外围设备响应</span></div><div class="line">mCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);</div><div class="line"><span class="comment">//无需设备响应的写入类型</span></div><div class="line">mCharacteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);</div><div class="line"></div><div class="line">mCharacteristic.setValue(data);</div><div class="line">mBluetoothGatt.writeCharacteristic(mCharacteristic);</div><div class="line"></div><div class="line"></div><div class="line">      <span class="comment">//写入特征回调</span></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicWrite</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">          <span class="keyword">final</span> BluetoothGattCharacteristic characteristic, <span class="keyword">final</span> <span class="keyword">int</span> status) &#123;</div><div class="line"></div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+<p>写特征的用法和前面打开通知中的写descriptor类似。</p>
+<blockquote>
+<p><strong>注意:</strong></p>
+</blockquote>
+<ul>
+<li><p>上面提到了2种写入类型，他们的区别是：</p>
+<ul>
+<li>WRITE_TYPE_DEFAULT:写入数据后需要外围设备给出响应才会回调onCharacteristicWrite</li>
+<li>WRITE_TYPE_NO_RESPONSE:写入数据后无需外围设备给出响应就会回调onCharacteristicWrite<blockquote>
+<p>如果使用WRITE_TYPE_DEFAULT这种类型写入，而外围设备没有回应，那后面的操作都会被阻塞。因此，使用哪种方式需要大家根据自己的外围设备决定,大家可以尝试把示例工程中的<a href="https://github.com/NoHarry/BleServer/blob/master/app/src/main/java/cc/noharry/bleserver/ble/BLEAdmin.java#L323" target="_blank" rel="external">这一行</a>注释掉然后在来写入数据，结合日志看看会能更好的理解。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>一次写入最多能写入20字节的数据，如果需要写入更多的数据可以分包多次写入，或者如果设备支持<a href="https://developer.android.com/reference/android/bluetooth/BluetoothGatt#requestMtu" target="_blank" rel="external">更改MTU</a>的话一次最多可以传输512字节。</p>
+</li>
+</ul>
+<h3 id="读特征"><a href="#读特征" class="headerlink" title="读特征"></a>读特征</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//读特征</span></div><div class="line">mBluetoothGatt.readCharacteristic(mCharacteristic);</div><div class="line"></div><div class="line"><span class="comment">//读特征的回调</span></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCharacteristicRead</span><span class="params">(BluetoothGatt gatt,</span></span></div><div class="line">          <span class="keyword">final</span> BluetoothGattCharacteristic characteristic, <span class="keyword">final</span> <span class="keyword">int</span> status) &#123;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>读特征这个操作没多少坑，只是需要前面提到的成功回调以后才算执行完成</p>
+<h3 id="断开连接"><a href="#断开连接" class="headerlink" title="断开连接"></a>断开连接</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">disConnect</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">if</span> (mBluetoothGatt!=<span class="keyword">null</span>)&#123;</div><div class="line">      <span class="comment">//断开连接</span></div><div class="line">      mBluetoothGatt.disconnect();</div><div class="line">      <span class="comment">// mBluetoothGatt.close();</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onConnectionStateChange</span><span class="params">(BluetoothGatt gatt, <span class="keyword">int</span> status, <span class="keyword">int</span> newState)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (newState==BluetoothProfile.STATE_DISCONNECTED)&#123;</div><div class="line">        <span class="comment">//关闭GATT客户端</span></div><div class="line">        gatt.close();</div><div class="line">      &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意:</strong></p>
+</blockquote>
+<ul>
+<li><strong>断开连接</strong>和<strong>连接</strong>一样最好都在<strong>主线程</strong>执行</li>
+<li>BluetoothGatt.disConnect()方法和BluetoothGatt.close()方法要成对配合使用，有一点需要注意：如果调用disConnect()方法后立即调用close()方法(就像上面注释掉的代码那样)蓝牙能正常断开，只是在onConnectionStateChange中我们就收不到newState为BluetoothProfile.STATE_DISCONNECTED的状态回调，因此，可以在收到断开连接的回调后在关闭GATT客户端。</li>
+<li>如果断开连接后没调用close方法，在多次重复连接-断开之后可能你就再也连不上设备了。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>其实这篇文章除了给大家列举了一些使用的API和可能遇到的问题外，最主要是要强调一个蓝牙操作的节奏，也就是一个任务完成下一个任务才能开始的原则，为了便于大家入门，上面这些使用简化了很多需要考虑的逻辑，例如：读、写、通知一直没回调怎么办？(可以给这些操作都加上超时时间)等等，不过如果大家按照本文提供的方法使用就已经能避开很多可能会遇到的奇怪问题了。</p>
+<p>如果大家需要了解更多更详细的使用方法，这里给大家推荐2个开源的ble库：</p>
+<ul>
+<li><a href="https://github.com/NordicSemiconductor/Android-BLE-Library" target="_blank" rel="external">Android-BLE-Library</a>:NordicSemiconductor官方的Android ble库。</li>
+<li><a href="https://github.com/NoHarry/BLELib" target="_blank" rel="external">BLELib</a>:我自己封装的ble库,大家喜欢的话可以顺手star一下。</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/04/15/OkHttp流程浅析/" data-toggle="tooltip" data-placement="top" title="OkHttp 流程浅析">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/07/23/Room版本迁移遇到的问题/" data-toggle="tooltip" data-placement="top" title="Room版本迁移遇到的问题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#BLE" title="BLE">BLE</a>
+                        
+                          <a class="tag" href="/tags/#bluetooth-low-energy" title="bluetooth-low-energy">bluetooth-low-energy</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "noharry";
+    var disqus_identifier = "http://noharry.cc/2018/10/24/AndroidBLE快速上手指南/";
+    var disqus_url = "http://noharry.cc/2018/10/24/AndroidBLE快速上手指南/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NoHarry">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; NoHarry&#39;s Blog 2019 
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://noharry.cc/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-116830402-1';
+    var _gaDomain = 'noharry.cc';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="http://noharry.cc/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
