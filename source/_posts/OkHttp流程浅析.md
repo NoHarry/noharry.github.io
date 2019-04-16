@@ -4,7 +4,7 @@ title: OkHttp 流程浅析
 tags:
 - OkHttp
 - Android
-header-img: "bg.png"
+header-img: "bg.jpg"
 date: 2019/4/15 20:30:00
 update: 2019/4/15 21:01:00
 ---
